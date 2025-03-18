@@ -1,0 +1,132 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Vehicles {
+  id             String     @id @default(uuid()) @db.Uuid
+  fipeCode       String?
+  value          Float
+  referenceMonth Int
+  referenceYear  Int
+  vehicleYear    Int
+  createdAt      DateTime   @default(now())
+  deletedAt      DateTime?
+  updatedAt      DateTime   @updatedAt
+  isDeleted      Boolean    @default(false)
+  model          Models     @relation(fields: [modelId], references: [id])
+  modelId        String     @db.Uuid
+  fuelType       FuelTypes  @relation(fields: [fuelTypeId], references: [id])
+  fuelTypeId     String     @db.Uuid
+  createdBy      Users?     @relation("CreatedVehicles", fields: [createdById], references: [id])
+  createdById    String?    @db.Uuid
+  updatedBy      Users?     @relation("UpdatedVehicles", fields: [updatedById], references: [id])
+  updatedById    String?    @db.Uuid
+  deletedBy      Users?     @relation("DeletedVehicles", fields: [deletedById], references: [id])
+  deletedById    String?    @db.Uuid
+}
+
+model FuelTypes {
+  id           String     @id @default(uuid()) @db.Uuid
+  name         String
+  abbreviation String
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  deletedAt    DateTime?
+  isDeleted    Boolean    @default(false)
+  createdBy    Users?     @relation("CreatedFuelTypes", fields: [createdById], references: [id])
+  createdById  String?    @db.Uuid
+  updatedBy    Users?     @relation("UpdatedFuelTypes", fields: [updatedById], references: [id])
+  updatedById  String?    @db.Uuid
+  deletedBy    Users?     @relation("DeletedFuelTypes", fields: [deletedById], references: [id])
+  deletedById  String?    @db.Uuid
+  vehicles     Vehicles[]
+
+  // @@map("Fuel_Types")
+}
+
+model Brands {
+  id          String     @id @default(uuid()) @db.Uuid
+  name        String
+  fipeCode    String?
+  createdAt   DateTime   @default(now())
+  deletedAt   DateTime?
+  updatedAt   DateTime   @updatedAt
+  isDeleted   Boolean    @default(false)
+  createdBy   Users?     @relation("CreatedBrands", fields: [createdById], references: [id])
+  createdById String?    @db.Uuid
+  updatedBy   Users?     @relation("UpdatedBrands", fields: [updatedById], references: [id])
+  updatedById String?    @db.Uuid
+  deletedBy   Users?     @relation("DeletedBrands", fields: [deletedById], references: [id])
+  deletedById String?    @db.Uuid
+}
+
+model Models {
+  id          String      @id @default(uuid()) @db.Uuid
+  name        String
+  fipeCode    String?
+  createdAt   DateTime    @default(now())
+  deletedAt   DateTime?
+  updatedAt   DateTime    @updatedAt
+  isDeleted   Boolean     @default(false)
+  brandId     String      @db.Uuid
+  createdBy   Users?      @relation("CreatedModels", fields: [createdById], references: [id])
+  createdById String?     @db.Uuid
+  updatedBy   Users?      @relation("UpdatedModels", fields: [updatedById], references: [id])
+  updatedById String?     @db.Uuid
+  deletedBy   Users?      @relation("DeletedModels", fields: [deletedById], references: [id])
+  deletedById String?     @db.Uuid
+  
+  vehicles  Vehicles[]
+}
+
+model Users {
+  id           String          @id @default(uuid()) @db.Uuid
+  name         String
+  birthdate    DateTime?       @db.Date
+  contact      String?
+  nationalId   String?
+  email        String
+  password     String
+  refreshToken String?
+  createdAt    DateTime        @default(now())
+  deletedAt    DateTime?
+  updatedAt    DateTime        @updatedAt  
+  isDeleted    Boolean         @default(false)
+  createdBy    Users?          @relation("CreatedUsers", fields: [createdById], references: [id])
+  createdById  String?         @db.Uuid
+  updatedBy    Users?          @relation("UpdatedUsers", fields: [updatedById], references: [id])
+  updatedById  String?         @db.Uuid
+  deletedBy    Users?          @relation("DeletedUsers", fields: [deletedById], references: [id])
+  deletedById  String?         @db.Uuid
+
+  createdVehicles Vehicles[]   @relation("CreatedVehicles")
+  updatedVehicles Vehicles[]   @relation("UpdatedVehicles")
+  deletedVehicles Vehicles[]   @relation("DeletedVehicles")
+
+  createdFuelTypes FuelTypes[] @relation("CreatedFuelTypes")
+  updatedFuelTypes FuelTypes[] @relation("UpdatedFuelTypes")
+  deletedFuelTypes FuelTypes[] @relation("DeletedFuelTypes")
+
+  createdBrands Brands[]       @relation("CreatedBrands")
+  updatedBrands Brands[]       @relation("UpdatedBrands")
+  deletedBrands Brands[]       @relation("DeletedBrands")
+
+  createdModels Models[]       @relation("CreatedModels")
+  updatedModels Models[]       @relation("UpdatedModels")
+  deletedModels Models[]       @relation("DeletedModels")
+
+  createdUsers Users[]         @relation("CreatedUsers")
+  updatedUsers Users[]         @relation("UpdatedUsers")
+  deletedUsers Users[]         @relation("DeletedUsers")
+}
