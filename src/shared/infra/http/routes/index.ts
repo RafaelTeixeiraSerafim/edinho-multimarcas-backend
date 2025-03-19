@@ -1,3 +1,4 @@
+import { brandsRoutes } from "@modules/brands/routes/brands";
 import { fuelTypeRoutes } from "@modules/fuelTypes/routes/fuelTypes";
 import { usersRoutes } from "@modules/users/routes/users";
 import { vehicleRoutes } from "@modules/vehicles/routes/vehicles";
@@ -8,9 +9,8 @@ const routes = Router();
 routes.use("/vehicles", vehicleRoutes);
 routes.use("/users", usersRoutes);
 routes.use("/fuel-types", fuelTypeRoutes);
+routes.use("/brands", brandsRoutes);
 
-routes.get("/healthcheck", (_, response) =>
-  response.sendStatus(200)
-);
+routes.get("/healthcheck", (_, response) => response.sendStatus(200));
 
 export { routes };
