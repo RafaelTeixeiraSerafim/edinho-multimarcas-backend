@@ -4,7 +4,7 @@ import { UpdateUserDTO } from "../dtos/UpdateUserDTO";
 import { UserResponseDTO } from "../dtos/UserResponseDTO";
 
 export interface IUserRepository {
-  create(data: CreateUserDTO, createdById: string): Promise<IUser>;
+  create(data: CreateUserDTO, createdById?: string): Promise<UserResponseDTO>;
   update(id: string, data: UpdateUserDTO, updatedById: string): Promise<IUser>;
   delete(id: string, deletedById: string): Promise<void>;
   list(page: number, pageSize: number): Promise<UserResponseDTO[]>;

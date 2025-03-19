@@ -5,7 +5,9 @@ import { DeleteUserUseCase } from "./DeleteUserUseCase";
 export class DeleteUserController {
   async handle(request: Request, response: Response) {
     const userId = request.params.id;
-    const deletedById = request.user.id
+    const deletedById = request.user?.id;
+    if (!deletedById)
+      return response.status(401).json({ message: "user not authenticated" });
 
     try {
       const deleteUserUseCase = container.resolve(DeleteUserUseCase);

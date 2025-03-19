@@ -21,9 +21,8 @@ export class AuthenticateUserUseCase {
     if (!user) throw new Error("user not found");
 
     const samePassword = await bcrypt.compare(data.password, user.password);
-    if (!samePassword) {
+    if (!samePassword) 
       throw new Error("incorrect email or password");
-    }
 
     const payload = {
       userId: user.id,

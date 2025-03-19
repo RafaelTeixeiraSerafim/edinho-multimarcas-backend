@@ -6,8 +6,20 @@ import { IUserRepository } from "@modules/users/repositories/IUserRepository";
 import { prisma } from "@shared/infra/prisma";
 
 export class UserRepository implements IUserRepository {
-  async create(data: CreateUserDTO, createdById: string): Promise<IUser> {
-    return await prisma.users.create({ data: { ...data, createdById } });
+  async create(
+    data: CreateUserDTO,
+    createdById?: string
+  ): Promise<UserResponseDTO> {
+    let user = await prisma.users.create({ data: { ...data, createdById } });
+
+    if (!createdById)
+      user = await prisma.users.update({
+        where: { id: user.id },
+        data: { createdById: user.id },
+      });
+
+    const { password, refreshToken, ...userResponse } = user;
+    return userResponse;
   }
 
   async update(
@@ -30,6 +42,7 @@ export class UserRepository implements IUserRepository {
       data: {
         isDeleted: true,
         deletedById,
+        refreshToken: null,
       },
     });
 
@@ -56,13 +69,13 @@ export class UserRepository implements IUserRepository {
 
   async findByEmail(email: string): Promise<IUser | null> {
     return await prisma.users.findFirst({
-      where: { email },
+      where: { email, isDeleted: false },
     });
   }
 
   async findByNationalId(nationalId: string): Promise<IUser | null> {
     return await prisma.users.findFirst({
-      where: { nationalId },
+      where: { nationalId, isDeleted: false },
     });
   }
 }

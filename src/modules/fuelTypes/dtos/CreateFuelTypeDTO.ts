@@ -1,4 +1,4 @@
-import { IsOptional, IsString, IsUUID } from "class-validator";
+import { IsString } from "class-validator";
 
 export class CreateFuelTypeDTO {
   @IsString()
@@ -6,9 +6,4 @@ export class CreateFuelTypeDTO {
 
   @IsString()
   abbreviation: string;
-
-  @IsString()
-  @IsOptional()
-  @IsUUID()
-  createdById?: string;
 }

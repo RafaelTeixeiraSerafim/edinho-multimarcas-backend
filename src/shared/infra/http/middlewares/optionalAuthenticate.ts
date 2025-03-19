@@ -3,19 +3,24 @@ import { IAuthTokenPayload } from "@modules/users/interfaces/IAuthTokenPayload";
 import { NextFunction, Request, Response } from "express";
 import { verify } from "jsonwebtoken";
 
-export const ensureAuthenticated = async (
+export const optionalAuthenticate = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   const authHeader = req.headers.authorization;
 
-  if (!authHeader) return res.status(401).json({ error: "token is missing" });
+  if (!authHeader) {
+    req.user = undefined;
+    return next();
+  }
 
   const [, token] = authHeader.split(" ");
 
   const tokenSecret = process.env.AUTH_TOKEN_SECRET;
-  if (!tokenSecret) return res.status(500).json({ error: "server error" });
+  if (!tokenSecret) {
+    return res.status(500).json({ error: "server error" });
+  }
 
   try {
     const { userId } = verify(token, tokenSecret) as IAuthTokenPayload;
@@ -23,12 +28,11 @@ export const ensureAuthenticated = async (
     const userRepository = new UserRepository();
     const user = await userRepository.findById(userId);
 
-    if (!user)
-      return res.status(401).json({ error: "authenticated user not found" });
+    req.user = user ? user : undefined;
 
-    req.user = user;
     next();
   } catch (error) {
-    return res.status(401).json({ error: "invalid or expired token" });
+    req.user = undefined;
+    next();
   }
 };

@@ -6,15 +6,13 @@ export class UpdateUserController {
   async handle(request: Request, response: Response) {
     const userId = request.params.id;
     const data = request.body;
-    const updatedById = request.user.id;
+    const updatedById = request.user?.id;
+    if (!updatedById)
+      return response.status(401).json({ message: "user not authenticated" });
 
     try {
       const updateUserUseCase = container.resolve(UpdateUserUseCase);
-      const updatedUser = await updateUserUseCase.execute(
-        userId,
-        data,
-        updatedById
-      );
+      const updatedUser = await updateUserUseCase.execute(userId, data, updatedById)
       return response.status(200).json(updatedUser);
     } catch (error: any) {
       return response.status(400).json({ error: error.message });

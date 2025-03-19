@@ -3,6 +3,7 @@ import { IUser } from "@modules/users/interfaces/IUser";
 import { IUserRepository } from "@modules/users/repositories/IUserRepository";
 import { inject, injectable } from "tsyringe";
 import { generateHashedPassword } from "@utils/generateHashedPassword";
+import { UserResponseDTO } from "@modules/users/dtos/UserResponseDTO";
 
 @injectable()
 export class CreateUserUseCase {
@@ -10,7 +11,7 @@ export class CreateUserUseCase {
     @inject("UserRepository")
     private userRepository: IUserRepository
   ) {}
-  async execute(data: CreateUserDTO, createdById: string): Promise<IUser> {
+  async execute(data: CreateUserDTO, createdById?: string): Promise<UserResponseDTO> {
     const userByEmail = await this.userRepository.findByEmail(data.email);
     const userByNationalId = data.nationalId
       ? await this.userRepository.findByNationalId(data.nationalId)

@@ -13,6 +13,9 @@ import { DeleteUserController } from "../useCases/deleteUser/DeleteUserControlle
 import { AuthenticateUserController } from "../useCases/authenticateUser/AuthenticateUserController";
 import { AuthenticateUserDTO } from "../dtos/AuthenticateUserDTO";
 import { ensureAuthenticated } from "@shared/infra/http/middlewares/ensureAuthenticated";
+import { RefreshTokenDTO } from "../dtos/RefreshTokenDTO";
+import { RefreshTokenController } from "../useCases/refreshToken/RefreshTokenController";
+import { optionalAuthenticate } from "@shared/infra/http/middlewares/optionalAuthenticate";
 
 const usersRoutes = Router();
 
@@ -26,7 +29,14 @@ const deleteUserController = new DeleteUserController();
 
 const authenticateUserController = new AuthenticateUserController();
 
-usersRoutes.post("/", ensureAuthenticated, validateDTO(CreateUserDTO), createUserController.handle);
+const refreshTokenController = new RefreshTokenController();
+
+usersRoutes.post(
+  "/",
+  optionalAuthenticate,
+  validateDTO(CreateUserDTO),
+  createUserController.handle
+);
 
 usersRoutes.put(
   "/:id",
@@ -54,6 +64,12 @@ usersRoutes.post(
   "/auth",
   validateDTO(AuthenticateUserDTO),
   authenticateUserController.handle
+);
+
+usersRoutes.post(
+  "/auth/refresh",
+  validateDTO(RefreshTokenDTO),
+  refreshTokenController.handle
 );
 
 export { usersRoutes };
