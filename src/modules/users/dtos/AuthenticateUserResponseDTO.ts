@@ -1,7 +1,7 @@
 import { UserResponseDTO } from "./UserResponseDTO";
 
 export interface AuthenticateUserResponseDTO {
-  token: string;
+  accessToken: string;
   refreshToken: string;
   user: UserResponseDTO;
 }

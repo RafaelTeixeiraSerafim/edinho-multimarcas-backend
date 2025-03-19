@@ -21,8 +21,7 @@ export class AuthenticateUserUseCase {
     if (!user) throw new Error("user not found");
 
     const samePassword = await bcrypt.compare(data.password, user.password);
-    if (!samePassword) 
-      throw new Error("incorrect email or password");
+    if (!samePassword) throw new Error("incorrect email or password");
 
     const payload = {
       userId: user.id,
@@ -32,26 +31,20 @@ export class AuthenticateUserUseCase {
     const refreshTokenSecret = process.env.AUTH_REFRESH_TOKEN_SECRET;
 
     if (!tokenSecret || !refreshTokenSecret)
-      throw new Error("server missing required environment variable");
+      throw new Error("server missing required environment variable(s)");
 
-    const token = sign(payload, tokenSecret, { expiresIn: "15m" });
+    const accessToken = sign(payload, tokenSecret, { expiresIn: "15m" });
 
     const refreshToken = sign(payload, refreshTokenSecret, {
       expiresIn: "12h",
     });
 
-    await this.userRepository.update(
-      user.id,
-      {
-        refreshToken,
-      },
-      user.id
-    );
+    const refreshedUser = await this.userRepository.refreshToken(user.id, refreshToken, user.id);
 
     return {
-      token,
+      accessToken,
       refreshToken,
-      user: UserMapper.toUserResponseDTO(user),
+      user: refreshedUser,
     };
   }
 }

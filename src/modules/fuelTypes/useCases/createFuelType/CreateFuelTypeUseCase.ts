@@ -1,6 +1,6 @@
 import { inject, injectable } from "tsyringe";
-import { IFuelTypeRepository } from "../repositories/IFuelTypeRepository";
-import { CreateFuelTypeDTO } from "../dtos/CreateFuelTypeDTO";
+import { IFuelTypeRepository } from "../../repositories/IFuelTypeRepository";
+import { CreateFuelTypeDTO } from "../../dtos/CreateFuelTypeDTO";
 
 @injectable()
 export class CreateFuelTypeUseCase {

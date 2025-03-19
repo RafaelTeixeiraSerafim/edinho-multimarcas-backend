@@ -7,10 +7,13 @@ export class ListUsersController {
   async handle(request: Request, response: Response): Promise<Response> {
     const { page = 1, pageSize = 10 } = request.query as PaginationQueryDTO;
 
-    const listUsersUseCase = container.resolve(ListUsersUseCase);
+    try {
+      const listUsersUseCase = container.resolve(ListUsersUseCase);
+      const users = await listUsersUseCase.execute(page, pageSize);
 
-    const users = await listUsersUseCase.execute(page, pageSize);
-
-    return response.status(200).json(users);
+      return response.status(200).json({ users });
+    } catch (error: any) {
+      return response.status(400).json({ error: error.message });
+    }
   }
 }

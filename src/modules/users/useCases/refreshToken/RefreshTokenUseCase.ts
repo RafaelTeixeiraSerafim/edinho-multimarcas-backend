@@ -28,7 +28,8 @@ export class RefreshTokenUseCase {
     const user = await this.userRepository.findById(userId);
     if (!user) throw new Error("user not found");
 
-    if (user.refreshToken !== refreshToken) throw new Error("invalid refresh token");
+    if (user.refreshToken !== refreshToken)
+      throw new Error("invalid refresh token");
 
     const payload = {
       userId: user.id,
@@ -40,18 +41,16 @@ export class RefreshTokenUseCase {
       expiresIn: "12h",
     });
 
-    await this.userRepository.update(
+    const refreshedUser = await this.userRepository.refreshToken(
       user.id,
-      {
-        refreshToken: newRefreshToken,
-      },
+      newRefreshToken,
       user.id
     );
 
     return {
       token: newToken,
       refreshToken: newRefreshToken,
-      user: UserMapper.toUserResponseDTO(user),
+      user: refreshedUser,
     };
   }
 }

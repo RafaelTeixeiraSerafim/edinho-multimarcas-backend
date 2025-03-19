@@ -10,10 +10,6 @@ export class UpdateUserDTO {
   @IsOptional()
   email?: string;
 
-  @IsString()
-  @IsOptional()
-  refreshToken?: string;
-
   @IsDate()
   @IsOptional()
   @Transform(({ value }) => new Date(value))

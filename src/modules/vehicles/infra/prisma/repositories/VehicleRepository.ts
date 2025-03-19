@@ -7,4 +7,8 @@ export class VehicleRepository implements IVehicleRepository {
   async create(data: CreateVehicleDTO): Promise<IVehicle> {
     return await prisma.vehicles.create({ data });
   }
+
+  async findByFuelTypeId(fuelTypeId: string): Promise<IVehicle[]> {
+    return await prisma.vehicles.findMany({ where: { fuelTypeId } });
+  }
 }

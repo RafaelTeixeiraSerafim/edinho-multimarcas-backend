@@ -38,7 +38,7 @@ usersRoutes.post(
   createUserController.handle
 );
 
-usersRoutes.put(
+usersRoutes.patch(
   "/:id",
   ensureAuthenticated,
   validatePathParams(IdPathParamDTO),

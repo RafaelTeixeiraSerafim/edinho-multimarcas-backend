@@ -17,12 +17,10 @@ export class UpdateUserUseCase {
       ? await this.userRepository.findByNationalId(data.nationalId)
       : undefined;
 
-    if (
-      (userByEmail && userByEmail.id !== id) ||
-      (userByNationalId && userByNationalId.id !== id)
-    ) {
-      throw new Error("user with this email and/or nationalId already exists");
-    }
+    if (userByEmail && userByEmail.id !== id)
+      throw new Error("user with this email already exists");
+    if (userByNationalId && userByNationalId.id !== id)
+      throw new Error("user with this nationalId already exists");
 
     return await this.userRepository.update(id, data, updatedById);
   }

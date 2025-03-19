@@ -26,12 +26,34 @@ export class UserRepository implements IUserRepository {
     id: string,
     data: UpdateUserDTO,
     updatedById: string
-  ): Promise<IUser> {
+  ): Promise<UserResponseDTO> {
     return await prisma.users.update({
       where: { id },
       data: {
         ...data,
         updatedById,
+      },
+      omit: {
+        password: true,
+        refreshToken: true,
+      },
+    });
+  }
+
+  async refreshToken(
+    id: string,
+    refreshToken: string,
+    updatedById: string
+  ): Promise<UserResponseDTO> {
+    return await prisma.users.update({
+      where: { id },
+      data: {
+        refreshToken,
+        updatedById,
+      },
+      omit: {
+        password: true,
+        refreshToken: true,
       },
     });
   }
@@ -58,12 +80,15 @@ export class UserRepository implements IUserRepository {
         password: true,
         refreshToken: true,
       },
+      where: {
+        isDeleted: false,
+      },
     });
   }
 
   async findById(id: string): Promise<IUser | null> {
     return await prisma.users.findUnique({
-      where: { id },
+      where: { id, isDeleted: false },
     });
   }
 

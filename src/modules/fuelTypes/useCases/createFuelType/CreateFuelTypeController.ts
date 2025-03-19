@@ -7,7 +7,7 @@ export class CreateFuelTypeController {
     const data = request.body;
     const createdById = request.user?.id;
     if (!createdById)
-      return response.status(401).json({ message: "user not authenticated" });
+      return response.status(401).json({ error: "user not authenticated" });
 
     try {
       const createFuelTypeUseCase = container.resolve(CreateFuelTypeUseCase);
@@ -17,7 +17,7 @@ export class CreateFuelTypeController {
       );
       return response.status(201).json(createdFuelType);
     } catch (error: any) {
-      return response.status(400).json({ message: error.message });
+      return response.status(400).json({ error: error.message });
     }
   }
 }
