@@ -10,6 +10,11 @@ export class CreateFuelTypeUseCase {
   ) {}
 
   async execute(data: CreateFuelTypeDTO, createdById: string) {
+    const existsFuelType = await this.fuelTypeRepository.findByName(data.name);
+
+    if (existsFuelType)
+      throw new Error("a fuel type with this name already exists");
+
     return await this.fuelTypeRepository.create(data, createdById);
   }
 }
