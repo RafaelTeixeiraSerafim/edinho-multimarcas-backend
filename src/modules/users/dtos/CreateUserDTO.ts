@@ -19,8 +19,4 @@ export class CreateUserDTO {
 
   @IsOptional()
   nationalId?: string;
-
-  @IsString()
-  @IsUUID()
-  createdById: string;
 }

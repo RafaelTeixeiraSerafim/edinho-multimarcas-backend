@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from "express";
+import { Response, NextFunction, Request } from "express";
 import { validate } from "class-validator";
 import { plainToInstance } from "class-transformer";
 import { verify } from "jsonwebtoken";
@@ -15,20 +15,32 @@ export const ensureAuthenticated = async (
 ) => {
   const authHeader = req.headers.authorization;
 
-  if (!authHeader) throw new Error("authorization token missing");
+  if (!authHeader)
+    return res.status(401).json({ error: "authorization token is missing" });
 
   const [, token] = authHeader.split(" ");
 
   try {
     const tokenSecret = process.env.AUTH_TOKEN_SECRET;
     if (!tokenSecret)
-      throw new Error("server missing required environment variable");
+      return res
+        .status(500)
+        .json({ error: "server error" });
 
     const { userId } = verify(token, tokenSecret) as IPayload;
 
-    const userRepository = new UserRepository()
-    const user = await userRepository.findById(userId)
+    if (!userId)
+      return res.status(401).json({ error: "invalid or expired authentication token" });
 
-  } catch (error) {}
-  next();
+    const userRepository = new UserRepository();
+    const user = await userRepository.findById(userId);
+
+    if (!user)
+      return res.status(401).json({ error: "invalid or expired authentication token" });
+
+    req.user = user;
+    next();
+  } catch (error) {
+    return res.status(401).json({ error: "invalid or expired authentication token" });
+  }
 };

@@ -9,7 +9,7 @@ export class UpdateUserUseCase {
     private userRepository: IUserRepository
   ) {}
 
-  async execute(id: string, data: UpdateUserDTO) {
+  async execute(id: string, data: UpdateUserDTO, updatedById: string) {
     const userByEmail = data.email
       ? await this.userRepository.findByEmail(data.email)
       : undefined;
@@ -24,6 +24,6 @@ export class UpdateUserUseCase {
       throw new Error("user with this email and/or nationalId already exists");
     }
 
-    return await this.userRepository.update(id, data);
+    return await this.userRepository.update(id, data, updatedById);
   }
 }

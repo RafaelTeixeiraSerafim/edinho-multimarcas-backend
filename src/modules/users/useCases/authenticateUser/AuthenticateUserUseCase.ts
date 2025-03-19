@@ -41,10 +41,13 @@ export class AuthenticateUserUseCase {
       expiresIn: "12h",
     });
 
-    await this.userRepository.update(user.id, {
-      refreshToken,
-      updatedById: user.id,
-    });
+    await this.userRepository.update(
+      user.id,
+      {
+        refreshToken,
+      },
+      user.id
+    );
 
     return {
       token,

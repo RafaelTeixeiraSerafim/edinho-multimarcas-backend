@@ -10,7 +10,7 @@ export class CreateUserUseCase {
     @inject("UserRepository")
     private userRepository: IUserRepository
   ) {}
-  async execute(data: CreateUserDTO): Promise<IUser> {
+  async execute(data: CreateUserDTO, createdById: string): Promise<IUser> {
     const userByEmail = await this.userRepository.findByEmail(data.email);
     const userByNationalId = data.nationalId
       ? await this.userRepository.findByNationalId(data.nationalId)
@@ -22,6 +22,6 @@ export class CreateUserUseCase {
 
     data.password = await generateHashedPassword(data.password);
 
-    return await this.userRepository.create(data);
+    return await this.userRepository.create(data, createdById);
   }
 }

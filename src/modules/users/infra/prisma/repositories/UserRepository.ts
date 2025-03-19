@@ -1,37 +1,50 @@
 import { CreateUserDTO } from "@modules/users/dtos/CreateUserDTO";
 import { UpdateUserDTO } from "@modules/users/dtos/UpdateUserDTO";
+import { UserResponseDTO } from "@modules/users/dtos/UserResponseDTO";
 import { IUser } from "@modules/users/interfaces/IUser";
 import { IUserRepository } from "@modules/users/repositories/IUserRepository";
 import { prisma } from "@shared/infra/prisma";
 
 export class UserRepository implements IUserRepository {
-  async create(data: CreateUserDTO): Promise<IUser> {
-    return await prisma.users.create({ data });
+  async create(data: CreateUserDTO, createdById: string): Promise<IUser> {
+    return await prisma.users.create({ data: { ...data, createdById } });
   }
 
-  async update(id: string, data: UpdateUserDTO): Promise<IUser> {
+  async update(
+    id: string,
+    data: UpdateUserDTO,
+    updatedById: string
+  ): Promise<IUser> {
     return await prisma.users.update({
       where: { id },
-      data,
+      data: {
+        ...data,
+        updatedById,
+      },
     });
   }
 
-  async delete(id: string): Promise<void> {
+  async delete(id: string, deletedById: string): Promise<void> {
     await prisma.users.update({
       where: { id },
       data: {
         isDeleted: true,
+        deletedById,
       },
     });
 
     return;
   }
 
-  async list(page: number, pageSize: number): Promise<IUser[]> {
+  async list(page: number, pageSize: number): Promise<UserResponseDTO[]> {
     return await prisma.users.findMany({
       take: pageSize,
       skip: pageSize * (page - 1),
       orderBy: { createdAt: "asc" },
+      omit: {
+        password: true,
+        refreshToken: true,
+      },
     });
   }
 

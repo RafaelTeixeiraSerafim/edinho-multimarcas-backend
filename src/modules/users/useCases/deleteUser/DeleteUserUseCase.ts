@@ -8,13 +8,16 @@ export class DeleteUserUseCase {
     private userRepository: IUserRepository
   ) {}
 
-  async execute(id: string): Promise<void> {
+  async execute(id: string, deletedById: string): Promise<void> {
     const user = await this.userRepository.findById(id);
 
     if (!user || user.isDeleted) {
       throw new Error("user not found");
     }
 
-    return await this.userRepository.delete(id);
+    if (user.id !== deletedById)
+      throw new Error("user can only delete their own account")
+
+    await this.userRepository.delete(id, deletedById);
   }
 }

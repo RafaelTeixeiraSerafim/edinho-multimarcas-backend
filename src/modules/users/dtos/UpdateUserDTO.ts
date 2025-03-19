@@ -24,8 +24,4 @@ export class UpdateUserDTO {
 
   @IsOptional()
   nationalId?: string;
-
-  @IsString()
-  @IsUUID()
-  updatedById: string;
 }

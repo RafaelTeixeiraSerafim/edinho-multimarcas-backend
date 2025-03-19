@@ -12,6 +12,7 @@ import { IdPathParamDTO } from "@shared/dtos/IdPathParamDTO";
 import { DeleteUserController } from "../useCases/deleteUser/DeleteUserController";
 import { AuthenticateUserController } from "../useCases/authenticateUser/AuthenticateUserController";
 import { AuthenticateUserDTO } from "../dtos/AuthenticateUserDTO";
+import { ensureAuthenticated } from "@shared/infra/http/middlewares/ensureAuthenticated";
 
 const usersRoutes = Router();
 
@@ -25,10 +26,11 @@ const deleteUserController = new DeleteUserController();
 
 const authenticateUserController = new AuthenticateUserController();
 
-usersRoutes.post("/", validateDTO(CreateUserDTO), createUserController.handle);
+usersRoutes.post("/", ensureAuthenticated, validateDTO(CreateUserDTO), createUserController.handle);
 
 usersRoutes.put(
   "/:id",
+  ensureAuthenticated,
   validatePathParams(IdPathParamDTO),
   validateDTO(UpdateUserDTO),
   updateUserController.handle
@@ -36,12 +38,14 @@ usersRoutes.put(
 
 usersRoutes.delete(
   "/:id",
+  ensureAuthenticated,
   validatePathParams(IdPathParamDTO),
   deleteUserController.handle
 );
 
 usersRoutes.get(
   "/",
+  ensureAuthenticated,
   validateQueryParams(PaginationQueryDTO),
   listUsersController.handle
 );
