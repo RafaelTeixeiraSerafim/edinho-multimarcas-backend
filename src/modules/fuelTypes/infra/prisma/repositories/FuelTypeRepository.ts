@@ -39,10 +39,10 @@ export class FuelTypeRepository implements IFuelTypeRepository {
   }
 
   async findByName(name: string): Promise<IFuelType | null> {
-    return await prisma.fuelTypes.findUnique({ where: { name } });
+    return await prisma.fuelTypes.findFirst({ where: { name, isDeleted: false } });
   }
 
   async findById(id: string): Promise<IFuelType | null> {
-    return await prisma.fuelTypes.findUnique({ where: { id } });
+    return await prisma.fuelTypes.findUnique({ where: { id, isDeleted: false } });
   }
 }

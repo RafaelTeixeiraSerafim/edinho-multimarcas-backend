@@ -11,7 +11,6 @@ export const optionalAuthenticate = async (
   const authHeader = req.headers.authorization;
 
   if (!authHeader) {
-    req.user = undefined;
     return next();
   }
 
@@ -32,7 +31,6 @@ export const optionalAuthenticate = async (
 
     next();
   } catch (error) {
-    req.user = undefined;
     next();
   }
 };

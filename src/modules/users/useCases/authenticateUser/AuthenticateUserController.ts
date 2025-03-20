@@ -1,9 +1,9 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { container } from "tsyringe";
 import { AuthenticateUserUseCase } from "./AuthenticateUserUseCase";
 
 export class AuthenticateUserController {
-  async handle(request: Request, response: Response) {
+  async handle(request: Request, response: Response, next: NextFunction) {
     const data = request.body;
 
     try {
@@ -12,8 +12,8 @@ export class AuthenticateUserController {
       );
       const authResponse = await authenticateUserUseCase.execute(data);
       return response.status(200).json(authResponse);
-    } catch (error: any) {
-      return response.status(400).json({ error: error.message });
+    } catch (error) {
+      next(error)
     }
   }
 }

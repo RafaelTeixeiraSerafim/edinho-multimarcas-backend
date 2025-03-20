@@ -38,7 +38,7 @@ model Vehicles {
 
 model FuelTypes {
   id           String     @id @default(uuid()) @db.Uuid
-  name         String     @unique
+  name         String
   abbreviation String
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
@@ -69,6 +69,8 @@ model Brands {
   updatedById String?    @db.Uuid
   deletedBy   Users?     @relation("DeletedBrands", fields: [deletedById], references: [id])
   deletedById String?    @db.Uuid
+
+  models      Models[]
 }
 
 model Models {
@@ -79,6 +81,7 @@ model Models {
   deletedAt   DateTime?
   updatedAt   DateTime    @updatedAt
   isDeleted   Boolean     @default(false)
+  brand       Brands      @relation(fields: [brandId], references: [id])
   brandId     String      @db.Uuid
   createdBy   Users?      @relation("CreatedModels", fields: [createdById], references: [id])
   createdById String?     @db.Uuid
@@ -87,7 +90,7 @@ model Models {
   deletedBy   Users?      @relation("DeletedModels", fields: [deletedById], references: [id])
   deletedById String?     @db.Uuid
   
-  vehicles  Vehicles[]
+  vehicles    Vehicles[]
 }
 
 model Users {

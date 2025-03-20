@@ -1,21 +1,30 @@
-import { CreateVehicleDTO } from "@modules/vehicles/dtos/CreateVehicleDTO";
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { container } from "tsyringe";
 import { CreateVehicleUseCase } from "./CreateVehicleUseCase";
+import { UnauthorizedError } from "@shared/infra/http/errors";
+import { CreateVehicleDTO } from "@modules/vehicles/dtos/CreateVehicleDTO";
 
 export class CreateVehicleController {
-  async handle(request: Request, response: Response): Promise<Response> {
+  async handle(request: Request, response: Response, next: NextFunction) {
     const data: CreateVehicleDTO = request.body;
+    const createdById = request.user?.id;
 
-    const currentDate = new Date();
+    try {
+      if (!createdById) throw new UnauthorizedError("user not authenticated");
 
-    data.referenceYear = data.referenceYear ?? currentDate.getFullYear();
-    data.referenceMonth = data.referenceMonth ?? currentDate.getMonth() + 1;
+      const currentDate = new Date();
 
-    const createVehicleUseCase = container.resolve(CreateVehicleUseCase);
+      data.referenceMonth = data.referenceMonth ?? currentDate.getMonth() + 1;
+      data.referenceYear = data.referenceYear ?? currentDate.getFullYear();
 
-    const createdVehicle = await createVehicleUseCase.execute(data);
-
-    return response.status(201).json(createdVehicle);
+      const createVehicleUseCase = container.resolve(CreateVehicleUseCase);
+      const createdVehicle = await createVehicleUseCase.execute(
+        data,
+        createdById
+      );
+      return response.status(201).json(createdVehicle);
+    } catch (error) {
+      next(error);
+    }
   }
 }

@@ -1,4 +1,6 @@
 import { IUserRepository } from "@modules/users/repositories/IUserRepository";
+import { NotFoundError } from "@shared/infra/http/errors";
+import { ForbiddenError } from "@shared/infra/http/errors/ForbiddenError";
 import { inject, injectable } from "tsyringe";
 
 @injectable()
@@ -12,11 +14,11 @@ export class DeleteUserUseCase {
     const user = await this.userRepository.findById(id);
 
     if (!user || user.isDeleted) {
-      throw new Error("user not found");
+      throw new NotFoundError("user not found");
     }
 
     if (user.id !== deletedById)
-      throw new Error("user can only delete their own account")
+      throw new ForbiddenError("user can only delete their own account")
 
     await this.userRepository.delete(id, deletedById);
   }

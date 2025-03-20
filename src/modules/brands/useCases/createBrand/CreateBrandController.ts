@@ -1,20 +1,21 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { container } from "tsyringe";
 import { CreateBrandUseCase } from "./CreateBrandUseCase";
+import { UnauthorizedError } from "@shared/infra/http/errors";
 
 export class CreateBrandController {
-  async handle(request: Request, response: Response) {
+  async handle(request: Request, response: Response, next: NextFunction) {
     const data = request.body;
     const createdById = request.user?.id;
-    if (!createdById)
-      return response.status(401).json({ error: "user not authenticated" });
-
+    
     try {
+      if (!createdById) throw new UnauthorizedError("user not authenticated");
+      
       const createBrandUseCase = container.resolve(CreateBrandUseCase);
       const createdBrand = await createBrandUseCase.execute(data, createdById);
       return response.status(201).json(createdBrand);
-    } catch (error: any) {
-      return response.status(400).json({ error: error.message });
+    } catch (error) {
+      next(error);
     }
   }
 }

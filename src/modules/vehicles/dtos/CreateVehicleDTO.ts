@@ -1,4 +1,12 @@
-import { IsOptional, IsNumber, IsString, IsUUID, Min, Max } from "class-validator";
+import { Transform } from "class-transformer";
+import {
+  IsOptional,
+  IsNumber,
+  IsString,
+  IsUUID,
+  Min,
+  Max,
+} from "class-validator";
 
 export class CreateVehicleDTO {
   @IsOptional()
@@ -12,11 +20,14 @@ export class CreateVehicleDTO {
   @IsNumber()
   @Min(1)
   @Max(12)
+  @IsOptional()
   referenceMonth: number;
 
   @IsNumber()
-  @Min(2000)
+  @Min(1900)
   @Max(new Date().getFullYear())
+  @Transform(({ value }) => value || new Date().getFullYear())
+  @IsOptional()
   referenceYear: number;
 
   @IsNumber()
@@ -31,9 +42,4 @@ export class CreateVehicleDTO {
   @IsString()
   @IsUUID()
   fuelTypeId: string;
-
-  @IsOptional()
-  @IsString()
-  @IsUUID()
-  createdById?: string;
 }

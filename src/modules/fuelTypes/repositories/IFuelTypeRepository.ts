@@ -13,7 +13,4 @@ export interface IFuelTypeRepository {
   list(page: number, pageSize: number): Promise<IFuelType[]>;
   findById(id: string): Promise<IFuelType | null>;
   findByName(name: string): Promise<IFuelType | null>;
-  // list(page: number, pageSize: number): Promise<UserResponseDTO[]>;
-  // findByEmail(email: string): Promise<IUser | null>;
-  // findByNationalId(nationalId: string): Promise<IUser | null>;
 }

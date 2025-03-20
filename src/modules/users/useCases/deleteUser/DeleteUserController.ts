@@ -1,20 +1,21 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { container } from "tsyringe";
 import { DeleteUserUseCase } from "./DeleteUserUseCase";
+import { UnauthorizedError } from "@shared/infra/http/errors";
 
 export class DeleteUserController {
-  async handle(request: Request, response: Response) {
+  async handle(request: Request, response: Response, next: NextFunction) {
     const userId = request.params.id;
     const deletedById = request.user?.id;
-    if (!deletedById)
-      return response.status(401).json({ message: "user not authenticated" });
 
     try {
+      if (!deletedById) throw new UnauthorizedError("user not authenticated");
+
       const deleteUserUseCase = container.resolve(DeleteUserUseCase);
       await deleteUserUseCase.execute(userId, deletedById);
       return response.status(204).json({});
-    } catch (error: any) {
-      return response.status(400).json({ error: error.message });
+    } catch (error) {
+      next(error);
     }
   }
 }

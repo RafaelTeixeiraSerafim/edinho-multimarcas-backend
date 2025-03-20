@@ -1,10 +1,10 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { container } from "tsyringe";
 import { ListUsersUseCase } from "./ListUsersUseCase";
 import { PaginationQueryDTO } from "@shared/dtos/PaginationQueryDTO";
 
 export class ListUsersController {
-  async handle(request: Request, response: Response): Promise<Response> {
+  async handle(request: Request, response: Response, next: NextFunction) {
     const { page = 1, pageSize = 10 } = request.query as PaginationQueryDTO;
 
     try {
@@ -12,8 +12,8 @@ export class ListUsersController {
       const users = await listUsersUseCase.execute(page, pageSize);
 
       return response.status(200).json({ users });
-    } catch (error: any) {
-      return response.status(400).json({ error: error.message });
+    } catch (error) {
+      next(error)
     }
   }
 }

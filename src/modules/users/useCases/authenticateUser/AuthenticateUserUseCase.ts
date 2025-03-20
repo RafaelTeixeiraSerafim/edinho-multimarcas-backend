@@ -5,6 +5,7 @@ import bcrypt from "bcrypt";
 import { sign } from "jsonwebtoken";
 import { AuthenticateUserResponseDTO } from "@modules/users/dtos/AuthenticateUserResponseDTO";
 import { UserMapper } from "@modules/users/mappers/UserMapper";
+import { NotFoundError, UnauthorizedError } from "@shared/infra/http/errors";
 
 @injectable()
 export class AuthenticateUserUseCase {
@@ -18,10 +19,10 @@ export class AuthenticateUserUseCase {
   ): Promise<AuthenticateUserResponseDTO> {
     const user = await this.userRepository.findByEmail(data.email);
 
-    if (!user) throw new Error("user not found");
+    if (!user) throw new NotFoundError("user not found");
 
     const samePassword = await bcrypt.compare(data.password, user.password);
-    if (!samePassword) throw new Error("incorrect email or password");
+    if (!samePassword) throw new UnauthorizedError("incorrect email or password");
 
     const payload = {
       userId: user.id,

@@ -4,6 +4,7 @@ import { IUserRepository } from "@modules/users/repositories/IUserRepository";
 import { inject, injectable } from "tsyringe";
 import { generateHashedPassword } from "@utils/generateHashedPassword";
 import { UserResponseDTO } from "@modules/users/dtos/UserResponseDTO";
+import { ConflictError } from "@shared/infra/http/errors/ConflictError";
 
 @injectable()
 export class CreateUserUseCase {
@@ -18,7 +19,7 @@ export class CreateUserUseCase {
       : undefined;
 
     if (userByEmail || userByNationalId) {
-      throw new Error("user with this email and/or nationalId already exists");
+      throw new ConflictError("user with this email and/or nationalId already exists");
     }
 
     data.password = await generateHashedPassword(data.password);

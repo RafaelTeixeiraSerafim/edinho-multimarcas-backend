@@ -1,0 +1,35 @@
+import { inject, injectable } from "tsyringe";
+import { IModelRepository } from "../../repositories/IModelRepository";
+import { UpdateModelDTO } from "../../dtos/UpdateModelDTO";
+import { ConflictError } from "@shared/infra/http/errors/ConflictError";
+import { IBrandRepository } from "@modules/brands/repositories/IBrandRepository";
+import { NotFoundError } from "@shared/infra/http/errors";
+
+@injectable()
+export class UpdateModelUseCase {
+  constructor(
+    @inject("ModelRepository")
+    private modelRepository: IModelRepository,
+    @inject("BrandRepository")
+    private brandRepository: IBrandRepository
+  ) {}
+  async execute(id: string, data: UpdateModelDTO, updatedById: string) {
+    const model = await this.modelRepository.findById(id);
+    if (!model) throw new NotFoundError("model not found");
+    
+    const existsModel = data.name
+      ? await this.modelRepository.findByName(data.name)
+      : undefined;
+
+    if (existsModel && existsModel.id !== id)
+      throw new ConflictError("a model with this name already exists");
+
+    if (data.brandId) {
+      const existsBrand = await this.brandRepository.findById(data.brandId);
+      if (!existsBrand)
+        throw new NotFoundError("a brand with this id does not exist");
+    }
+
+    return await this.modelRepository.update(id, data, updatedById);
+  }
+}

@@ -2,6 +2,7 @@ import { RefreshTokenDTO } from "@modules/users/dtos/RefreshTokenDTO";
 import { IAuthTokenPayload } from "@modules/users/interfaces/IAuthTokenPayload";
 import { UserMapper } from "@modules/users/mappers/UserMapper";
 import { IUserRepository } from "@modules/users/repositories/IUserRepository";
+import { NotFoundError, UnauthorizedError } from "@shared/infra/http/errors";
 import { sign, verify } from "jsonwebtoken";
 import { inject, injectable } from "tsyringe";
 
@@ -26,10 +27,10 @@ export class RefreshTokenUseCase {
     ) as IAuthTokenPayload;
 
     const user = await this.userRepository.findById(userId);
-    if (!user) throw new Error("user not found");
+    if (!user) throw new NotFoundError("user not found");
 
     if (user.refreshToken !== refreshToken)
-      throw new Error("invalid refresh token");
+      throw new UnauthorizedError("invalid refresh token");
 
     const payload = {
       userId: user.id,
