@@ -19,10 +19,11 @@ export class AuthenticateUserUseCase {
   ): Promise<AuthenticateUserResponseDTO> {
     const user = await this.userRepository.findByEmail(data.email);
 
-    if (!user) throw new NotFoundError("user not found");
+    if (!user) throw new UnauthorizedError("Email e/ou senha incorretos");
 
     const samePassword = await bcrypt.compare(data.password, user.password);
-    if (!samePassword) throw new UnauthorizedError("incorrect email or password");
+    if (!samePassword)
+      throw new UnauthorizedError("Email e/ou senha incorretos");
 
     const payload = {
       userId: user.id,
@@ -32,7 +33,7 @@ export class AuthenticateUserUseCase {
     const refreshTokenSecret = process.env.AUTH_REFRESH_TOKEN_SECRET;
 
     if (!tokenSecret || !refreshTokenSecret)
-      throw new Error("server missing required environment variable(s)");
+      throw new Error("Variáveis de ambiente de autenticação ausentes");
 
     const accessToken = sign(payload, tokenSecret, { expiresIn: "15m" });
 
@@ -40,7 +41,11 @@ export class AuthenticateUserUseCase {
       expiresIn: "12h",
     });
 
-    const refreshedUser = await this.userRepository.refreshToken(user.id, refreshToken, user.id);
+    const refreshedUser = await this.userRepository.refreshToken(
+      user.id,
+      refreshToken,
+      user.id
+    );
 
     return {
       accessToken,

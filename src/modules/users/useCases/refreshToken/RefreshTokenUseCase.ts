@@ -19,7 +19,7 @@ export class RefreshTokenUseCase {
     const tokenSecret = process.env.AUTH_TOKEN_SECRET;
     const refreshTokenSecret = process.env.AUTH_REFRESH_TOKEN_SECRET;
     if (!refreshTokenSecret || !tokenSecret)
-      throw new Error("server missing required env variable(s)");
+      throw new Error("Variáveis de ambiente de autenticação ausentes");
 
     const { userId } = verify(
       refreshToken,
@@ -27,10 +27,10 @@ export class RefreshTokenUseCase {
     ) as IAuthTokenPayload;
 
     const user = await this.userRepository.findById(userId);
-    if (!user) throw new NotFoundError("user not found");
+    if (!user) throw new NotFoundError("Usuário não encontrado");
 
     if (user.refreshToken !== refreshToken)
-      throw new UnauthorizedError("invalid refresh token");
+      throw new UnauthorizedError("Token de atualização de autenticação inválido");
 
     const payload = {
       userId: user.id,

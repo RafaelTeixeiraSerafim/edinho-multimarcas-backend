@@ -2,6 +2,7 @@ import { UserRepository } from "@modules/users/infra/prisma/repositories/UserRep
 import { IAuthTokenPayload } from "@modules/users/interfaces/IAuthTokenPayload";
 import { NextFunction, Request, Response } from "express";
 import { verify } from "jsonwebtoken";
+import { UnauthorizedError } from "../errors";
 
 export const optionalAuthenticate = async (
   req: Request,
@@ -17,9 +18,7 @@ export const optionalAuthenticate = async (
   const [, token] = authHeader.split(" ");
 
   const tokenSecret = process.env.AUTH_TOKEN_SECRET;
-  if (!tokenSecret) {
-    return res.status(500).json({ error: "server error" });
-  }
+  if (!tokenSecret) throw new UnauthorizedError("Token de acesso ausente");
 
   try {
     const { userId } = verify(token, tokenSecret) as IAuthTokenPayload;

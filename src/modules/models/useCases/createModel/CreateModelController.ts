@@ -9,7 +9,7 @@ export class CreateModelController {
     const createdById = request.user?.id;
 
     try {
-      if (!createdById) throw new UnauthorizedError("user not authenticated");
+      if (!createdById) throw new UnauthorizedError("Usuário não autenticado");
 
       const createModelUseCase = container.resolve(CreateModelUseCase);
       const createdModel = await createModelUseCase.execute(data, createdById);

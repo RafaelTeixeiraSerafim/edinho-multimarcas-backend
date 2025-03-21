@@ -20,27 +20,34 @@ export class UpdateVehicleUseCase {
   ) {}
   async execute(id: string, data: UpdateVehicleDTO, updatedById: string) {
     const vehicle = await this.vehicleRepository.findById(id);
-    if (!vehicle) throw new NotFoundError("vehicle not found");
+    if (!vehicle) throw new NotFoundError("Veículo não encontrado");
 
     const existsVehicle = await this.vehicleRepository.findExistingVehicle(
       vehicle
     );
     if (existsVehicle && existsVehicle.id !== id)
-      throw new ConflictError("a vehicle with this data already exists");
+      throw new ConflictError("Um veículo com esses dados já existe");
 
     if (data.modelId) {
       const existsModel = await this.modelRepository.findById(data.modelId);
       if (!existsModel)
-        throw new NotFoundError("a model with this id does not exist");
+        throw new NotFoundError("Um modelo com esse id não existe");
     }
 
     if (data.fuelTypeId) {
-      const existsFuelType = await this.fuelTypeRepository.findById(data.fuelTypeId);
+      const existsFuelType = await this.fuelTypeRepository.findById(
+        data.fuelTypeId
+      );
       if (!existsFuelType)
-        throw new NotFoundError("a fuel type with this id does not exist");
+        throw new NotFoundError(
+          "Um tipo de combustível com esse id não existe"
+        );
     }
 
-    if (vehicle.fipeCode && data.value) throw new ForbiddenError("cannot update the value of a vehicle with a FIPE code")
+    if (vehicle.fipeCode && data.value)
+      throw new ForbiddenError(
+        "Não é possível atualizar o preço de um veículo que possui um código FIPE"
+      );
 
     return await this.vehicleRepository.update(id, data, updatedById);
   }

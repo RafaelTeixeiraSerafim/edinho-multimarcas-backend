@@ -12,14 +12,14 @@ export class UpdateBrandUseCase {
   ) {}
   async execute(id: string, data: UpdateBrandDTO, updatedById: string) {
     const brand = await this.brandRepository.findById(id);
-    if (!brand) throw new NotFoundError("brand not found");
+    if (!brand) throw new NotFoundError("Marca não encontrada");
 
     const existsFuelType = data.name
       ? await this.brandRepository.findByName(data.name)
       : undefined;
 
     if (existsFuelType && existsFuelType.id !== id)
-      throw new ConflictError("a brand with this name already exists");
+      throw new ConflictError("Uma marca com esse nome já existe");
 
     return await this.brandRepository.update(id, data, updatedById);
   }

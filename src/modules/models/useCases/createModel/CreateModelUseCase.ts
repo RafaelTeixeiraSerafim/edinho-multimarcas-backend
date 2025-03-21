@@ -17,11 +17,11 @@ export class CreateModelUseCase {
   async execute(data: CreateModelDTO, createdById: string) {
     const existsModel = await this.modelRepository.findByName(data.name);
     if (existsModel)
-      throw new ConflictError("a model with this name already exists");
+      throw new ConflictError("Um modelo com esse nome já existe");
 
     const existsBrand = this.brandRepository.findById(data.brandId);
     if (!existsBrand)
-      throw new NotFoundError("a brand with this id does not exist");
+      throw new NotFoundError("Uma marca com esse id não existe");
 
     return await this.modelRepository.create(data, createdById);
   }

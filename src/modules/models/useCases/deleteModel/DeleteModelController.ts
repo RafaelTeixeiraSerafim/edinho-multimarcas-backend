@@ -9,7 +9,7 @@ export class DeleteModelController {
     const deletedById = request.user?.id;
 
     try {
-      if (!deletedById) throw new UnauthorizedError("user not authenticated");
+      if (!deletedById) throw new UnauthorizedError("Usuário não autenticado");
 
       const deleteModelUseCase = container.resolve(DeleteModelUseCase);
       await deleteModelUseCase.execute(modelId, deletedById);

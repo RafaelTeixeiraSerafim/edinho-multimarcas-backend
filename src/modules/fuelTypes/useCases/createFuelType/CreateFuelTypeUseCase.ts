@@ -14,7 +14,7 @@ export class CreateFuelTypeUseCase {
     const existsFuelType = await this.fuelTypeRepository.findByName(data.name);
 
     if (existsFuelType)
-      throw new ConflictError("a fuel type with this name already exists");
+      throw new ConflictError("Um tipo de combustível com esse nome já existe");
 
     return await this.fuelTypeRepository.create(data, createdById);
   }

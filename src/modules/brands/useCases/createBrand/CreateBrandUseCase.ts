@@ -13,7 +13,7 @@ export class CreateBrandUseCase {
     const existsBrand = await this.brandRepository.findByName(data.name);
 
     if (existsBrand)
-      throw new ConflictError("a brand with this name already exists");
+      throw new ConflictError("Uma marca com esse nome já existe");
 
     return await this.brandRepository.create(data, createdById);
   }

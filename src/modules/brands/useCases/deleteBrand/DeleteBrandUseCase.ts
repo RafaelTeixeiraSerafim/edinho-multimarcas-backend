@@ -18,11 +18,13 @@ export class DeleteBrandUseCase {
     const brand = await this.brandRepository.findById(id);
 
     if (!brand || brand.isDeleted)
-      throw new NotFoundError("brand not found");
+      throw new NotFoundError("Marca não encontrada");
 
-    const deleteModelUseCase = container.resolve(DeleteModelUseCase)
+    const deleteModelUseCase = container.resolve(DeleteModelUseCase);
     const models = await this.modelRepository.findByBrandId(id);
-    models.forEach((model) => deleteModelUseCase.execute(model.id, deletedById))
+    models.forEach((model) =>
+      deleteModelUseCase.execute(model.id, deletedById)
+    );
 
     await this.brandRepository.delete(id, deletedById);
   }

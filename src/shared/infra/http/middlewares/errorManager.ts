@@ -25,12 +25,11 @@ export function errorManager(
     });
   }
 
-  // Handle other types of errors
   res.status(500).json({
     success: false,
     error: {
       name: "InternalServerError",
-      message: "Something went wrong",
+      message: "Algo deu errado",
       statusCode: 500,
     },
   });

@@ -17,9 +17,12 @@ export class DeleteFuelTypeUseCase {
 
     const vehicles = await this.vehicleRepository.findByFuelTypeId(id);
     if (vehicles.length)
-      throw new ConflictError("can not delete fuel type used by vehicles");
+      throw new ConflictError(
+        "Não é possível excluir um tipo de combustível utilizado por um ou mais veículos"
+      );
 
-    if (!fuelType || fuelType.isDeleted) throw new NotFoundError("fuel type not found");
+    if (!fuelType || fuelType.isDeleted)
+      throw new NotFoundError("Tipo de combustível não encontrado");
 
     await this.fuelTypeRepository.delete(id, deletedById);
   }

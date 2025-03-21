@@ -14,10 +14,13 @@ export class DeleteModelUseCase {
   async execute(id: string, deletedById: string) {
     const model = await this.modelRepository.findById(id);
 
-    if (!model || model.isDeleted) throw new NotFoundError("model not found");
+    if (!model || model.isDeleted)
+      throw new NotFoundError("Modelo não encontrado");
 
     const vehicles = await this.vehicleRepository.findByModelId(id);
-    vehicles.forEach((vehicle) => this.vehicleRepository.delete(vehicle.id, deletedById))
+    vehicles.forEach((vehicle) =>
+      this.vehicleRepository.delete(vehicle.id, deletedById)
+    );
 
     await this.modelRepository.delete(id, deletedById);
   }

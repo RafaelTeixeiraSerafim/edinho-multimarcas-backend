@@ -15,19 +15,19 @@ export class UpdateModelUseCase {
   ) {}
   async execute(id: string, data: UpdateModelDTO, updatedById: string) {
     const model = await this.modelRepository.findById(id);
-    if (!model) throw new NotFoundError("model not found");
-    
+    if (!model) throw new NotFoundError("Modelo não encontrado");
+
     const existsModel = data.name
       ? await this.modelRepository.findByName(data.name)
       : undefined;
 
     if (existsModel && existsModel.id !== id)
-      throw new ConflictError("a model with this name already exists");
+      throw new ConflictError("Um modelo com esse nome já existe");
 
     if (data.brandId) {
       const existsBrand = await this.brandRepository.findById(data.brandId);
       if (!existsBrand)
-        throw new NotFoundError("a brand with this id does not exist");
+        throw new NotFoundError("Uma marca com esse id não existe");
     }
 
     return await this.modelRepository.update(id, data, updatedById);

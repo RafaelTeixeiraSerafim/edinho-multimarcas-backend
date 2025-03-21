@@ -11,9 +11,9 @@ export class UpdateVehicleController {
     const updatedById = request.user?.id;
 
     try {
-      if (!updatedById) throw new UnauthorizedError("user not authenticated");
+      if (!updatedById) throw new UnauthorizedError("Usuário não autenticado");
       if (!Object.keys(data).length)
-        throw new ValidationError("request body cannot be empty");
+        throw new ValidationError("Corpo da requisição não pode estar vazio");
 
       const updateVehicleUseCase = container.resolve(UpdateVehicleUseCase);
       const updatedVehicle = await updateVehicleUseCase.execute(

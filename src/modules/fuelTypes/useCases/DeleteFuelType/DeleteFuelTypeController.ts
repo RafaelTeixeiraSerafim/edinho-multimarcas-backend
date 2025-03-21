@@ -9,7 +9,7 @@ export class DeleteFuelTypeController {
     const deletedById = request.user?.id;
 
     try {
-      if (!deletedById) throw new UnauthorizedError("user not authenticated");
+      if (!deletedById) throw new UnauthorizedError("Usuário não autenticado");
 
       const deleteFuelTypeUseCase = container.resolve(DeleteFuelTypeUseCase);
       await deleteFuelTypeUseCase.execute(fuelTypeId, deletedById);

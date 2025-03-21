@@ -14,11 +14,11 @@ export class DeleteUserUseCase {
     const user = await this.userRepository.findById(id);
 
     if (!user || user.isDeleted) {
-      throw new NotFoundError("user not found");
+      throw new NotFoundError("Usuário não encontrado");
     }
 
     if (user.id !== deletedById)
-      throw new ForbiddenError("user can only delete their own account")
+      throw new ForbiddenError("Usuário só pode excluir sua própria conta");
 
     await this.userRepository.delete(id, deletedById);
   }

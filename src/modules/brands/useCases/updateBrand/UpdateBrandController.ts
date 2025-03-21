@@ -8,11 +8,11 @@ export class UpdateBrandController {
     const brandId = request.params.id;
     const data = request.body;
     const updatedById = request.user?.id;
-    
+
     try {
-      if (!updatedById) throw new UnauthorizedError("user not authenticated");
+      if (!updatedById) throw new UnauthorizedError("Usuário não autenticado");
       if (!Object.keys(data).length)
-        throw new ValidationError("request body cannot be empty");
+        throw new ValidationError("Corpo da requisição não pode estar vazio");
 
       const updateBrandUseCase = container.resolve(UpdateBrandUseCase);
       const updatedBrand = await updateBrandUseCase.execute(

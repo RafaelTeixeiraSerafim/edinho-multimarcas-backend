@@ -13,7 +13,7 @@ export class UpdateUserUseCase {
 
   async execute(id: string, data: UpdateUserDTO, updatedById: string) {
     const user = await this.userRepository.findById(id);
-    if (!user) throw new NotFoundError("user not found");
+    if (!user) throw new NotFoundError("Usuário não encontrado");
 
     const userByEmail = data.email
       ? await this.userRepository.findByEmail(data.email)
@@ -23,9 +23,9 @@ export class UpdateUserUseCase {
       : undefined;
 
     if (userByEmail && userByEmail.id !== id)
-      throw new ConflictError("user with this email already exists");
+      throw new ConflictError("Usuário com esse email já existe");
     if (userByNationalId && userByNationalId.id !== id)
-      throw new ConflictError("user with this nationalId already exists");
+      throw new ConflictError("Usuário com esse CPF já existe");
 
     return await this.userRepository.update(id, data, updatedById);
   }

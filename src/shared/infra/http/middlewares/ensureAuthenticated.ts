@@ -2,33 +2,34 @@ import { UserRepository } from "@modules/users/infra/prisma/repositories/UserRep
 import { IAuthTokenPayload } from "@modules/users/interfaces/IAuthTokenPayload";
 import { NextFunction, Request, Response } from "express";
 import { verify } from "jsonwebtoken";
+import { UnauthorizedError } from "../errors";
 
 export const ensureAuthenticated = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  const authHeader = req.headers.authorization;
-
-  if (!authHeader) return res.status(401).json({ error: "token is missing" });
-
-  const [, token] = authHeader.split(" ");
-
-  const tokenSecret = process.env.AUTH_TOKEN_SECRET;
-  if (!tokenSecret) return res.status(500).json({ error: "server error" });
-
   try {
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader) throw new UnauthorizedError("Token de acesso ausente");
+
+    const [, token] = authHeader.split(" ");
+
+    const tokenSecret = process.env.AUTH_TOKEN_SECRET;
+    if (!tokenSecret)
+      throw new Error("Variáveis de ambiente de autenticação ausentes");
+
     const { userId } = verify(token, tokenSecret) as IAuthTokenPayload;
 
     const userRepository = new UserRepository();
     const user = await userRepository.findById(userId);
 
-    if (!user)
-      return res.status(401).json({ error: "authenticated user not found" });
+    if (!user) throw new UnauthorizedError("Usuário não encontrado");
 
     req.user = user;
     next();
   } catch (error) {
-    return res.status(401).json({ error: "invalid or expired token" });
+    next(error);
   }
 };

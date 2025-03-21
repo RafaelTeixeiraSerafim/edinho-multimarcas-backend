@@ -12,15 +12,19 @@ export class CreateUserUseCase {
     @inject("UserRepository")
     private userRepository: IUserRepository
   ) {}
-  async execute(data: CreateUserDTO, createdById?: string): Promise<UserResponseDTO> {
+  async execute(
+    data: CreateUserDTO,
+    createdById?: string
+  ): Promise<UserResponseDTO> {
     const userByEmail = await this.userRepository.findByEmail(data.email);
     const userByNationalId = data.nationalId
       ? await this.userRepository.findByNationalId(data.nationalId)
       : undefined;
 
-    if (userByEmail || userByNationalId) {
-      throw new ConflictError("user with this email and/or nationalId already exists");
-    }
+    if (userByEmail)
+      throw new ConflictError("Usuário com esse email já existe");
+    if (userByNationalId)
+      throw new ConflictError("Usuário com esse CPF já existe");
 
     data.password = await generateHashedPassword(data.password);
 

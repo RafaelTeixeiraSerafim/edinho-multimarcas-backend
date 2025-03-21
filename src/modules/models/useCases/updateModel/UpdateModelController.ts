@@ -2,7 +2,11 @@ import { NextFunction, Request, Response } from "express";
 import { container } from "tsyringe";
 import { UpdateModelUseCase } from "./UpdateModelUseCase";
 import { UpdateModelDTO } from "@modules/models/dtos/UpdateModelDTO";
-import { NotFoundError, UnauthorizedError, ValidationError } from "@shared/infra/http/errors";
+import {
+  NotFoundError,
+  UnauthorizedError,
+  ValidationError,
+} from "@shared/infra/http/errors";
 
 export class UpdateModelController {
   async handle(request: Request, response: Response, next: NextFunction) {
@@ -11,9 +15,9 @@ export class UpdateModelController {
     const updatedById = request.user?.id;
 
     try {
-      if (!updatedById) throw new UnauthorizedError("user not authenticated");
+      if (!updatedById) throw new UnauthorizedError("Usuário não autenticado");
       if (!Object.keys(data).length)
-        throw new ValidationError("request body cannot be empty");
+        throw new ValidationError("Corpo da requisição não pode estar vazio");
 
       const updateModelUseCase = container.resolve(UpdateModelUseCase);
       const updatedModel = await updateModelUseCase.execute(

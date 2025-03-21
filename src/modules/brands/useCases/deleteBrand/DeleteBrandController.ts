@@ -8,10 +8,10 @@ export class DeleteBrandController {
   async handle(request: Request, response: Response, next: NextFunction) {
     const brandId = request.params.id;
     const deletedById = request.user?.id;
-    
+
     try {
-      if (!deletedById) throw new UnauthorizedError("user not authenticated");
-      
+      if (!deletedById) throw new UnauthorizedError("Usuário não autenticado");
+
       const deleteBrandUseCase = container.resolve(DeleteBrandUseCase);
       await deleteBrandUseCase.execute(brandId, deletedById);
       return response.status(204).json({});

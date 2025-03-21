@@ -9,7 +9,7 @@ export class CreateFuelTypeController {
     const createdById = request.user?.id;
 
     try {
-      if (!createdById) throw new UnauthorizedError("user not authenticated");
+      if (!createdById) throw new UnauthorizedError("Usuário não autenticado");
 
       const createFuelTypeUseCase = container.resolve(CreateFuelTypeUseCase);
       const createdFuelType = await createFuelTypeUseCase.execute(

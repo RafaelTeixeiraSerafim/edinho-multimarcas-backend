@@ -1,22 +1,28 @@
 import { Request, Response, NextFunction } from "express";
 import { validate } from "class-validator";
 import { ClassConstructor, plainToInstance } from "class-transformer";
+import { ValidationError } from "../errors";
 
 export const validatePathParams =
   <T>(dtoClass: ClassConstructor<T>) =>
   async (req: Request, res: Response, next: NextFunction) => {
-    const dto = plainToInstance(dtoClass, req.params);
-    const errors = await validate(dto as object, {
-      whitelist: true,
-      forbidNonWhitelisted: true,
-    });
-
-    if (errors.length > 0) {
-      return res
-        .status(400)
-        .json({ errors: errors.map((err) => err.constraints) });
+    try {
+      const dto = plainToInstance(dtoClass, req.params);
+      const errors = await validate(dto as object, {
+        whitelist: true,
+        forbidNonWhitelisted: true,
+      });
+  
+      if (errors.length > 0)
+        throw new ValidationError(
+          errors[0].constraints
+            ? Object.values(errors[0].constraints)[0]
+            : "Requisição inválida"
+        );
+  
+      req.params = dto as any;
+      next();
+    } catch (error) {
+      next(error)
     }
-
-    req.params = dto as any; // Replace the params object with the validated DTO
-    next();
   };

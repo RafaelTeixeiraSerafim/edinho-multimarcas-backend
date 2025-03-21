@@ -18,17 +18,21 @@ export class CreateVehicleUseCase {
     private fuelTypeRepository: IFuelTypeRepository
   ) {}
   async execute(data: CreateVehicleDTO, createdById: string) {
-    const existsVehicle = await this.vehicleRepository.findExistingVehicle(data);
+    const existsVehicle = await this.vehicleRepository.findExistingVehicle(
+      data
+    );
     if (existsVehicle)
-      throw new ConflictError("a vehicle with this data already exists");
+      throw new ConflictError("Um veículo com esses dados já existe");
 
     const existsModel = await this.modelRepository.findById(data.modelId);
     if (!existsModel)
-      throw new NotFoundError("a brand with this id does not exist");
+      throw new NotFoundError("Uma marca com esse id não existe");
 
-    const existsFuelType = await this.fuelTypeRepository.findById(data.fuelTypeId);
+    const existsFuelType = await this.fuelTypeRepository.findById(
+      data.fuelTypeId
+    );
     if (!existsFuelType)
-      throw new NotFoundError("a fuel type with this id does not exist");
+      throw new NotFoundError("Um tipo de combustível com esse id não existe");
 
     return await this.vehicleRepository.create(data, createdById);
   }

@@ -10,9 +10,9 @@ export class UpdateUserController {
     const updatedById = request.user?.id;
 
     try {
-      if (!updatedById) throw new UnauthorizedError("user not authenticated");
+      if (!updatedById) throw new UnauthorizedError("Usuário não autenticado");
       if (!Object.keys(data).length)
-        throw new ValidationError("request body cannot be empty");
+        throw new ValidationError("Corpo da requisição não pode estar vazio");
 
       const updateUserUseCase = container.resolve(UpdateUserUseCase);
       const updatedUser = await updateUserUseCase.execute(

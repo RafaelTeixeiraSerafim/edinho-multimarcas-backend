@@ -7,10 +7,10 @@ export class CreateBrandController {
   async handle(request: Request, response: Response, next: NextFunction) {
     const data = request.body;
     const createdById = request.user?.id;
-    
+
     try {
-      if (!createdById) throw new UnauthorizedError("user not authenticated");
-      
+      if (!createdById) throw new UnauthorizedError("Usuário não autenticado");
+
       const createBrandUseCase = container.resolve(CreateBrandUseCase);
       const createdBrand = await createBrandUseCase.execute(data, createdById);
       return response.status(201).json(createdBrand);
