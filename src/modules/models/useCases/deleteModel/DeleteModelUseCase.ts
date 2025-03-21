@@ -15,7 +15,7 @@ export class DeleteModelUseCase {
     const model = await this.modelRepository.findById(id);
 
     if (!model || model.isDeleted)
-      throw new NotFoundError("Modelo não encontrado");
+      throw new NotFoundError("Modelo não encontrado", "id");
 
     const vehicles = await this.vehicleRepository.findByModelId(id);
     vehicles.forEach((vehicle) =>

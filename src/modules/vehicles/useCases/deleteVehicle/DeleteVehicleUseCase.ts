@@ -13,7 +13,7 @@ export class DeleteVehicleUseCase {
     const vehicle = await this.vehicleRepository.findById(id);
 
     if (!vehicle || vehicle.isDeleted)
-      throw new NotFoundError("Veículo não encontrado");
+      throw new NotFoundError("Veículo não encontrado", "id");
 
     if (vehicle.fipeCode)
       throw new ForbiddenError(

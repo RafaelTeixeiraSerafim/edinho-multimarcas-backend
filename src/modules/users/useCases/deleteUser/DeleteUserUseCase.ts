@@ -14,7 +14,7 @@ export class DeleteUserUseCase {
     const user = await this.userRepository.findById(id);
 
     if (!user || user.isDeleted) {
-      throw new NotFoundError("Usuário não encontrado");
+      throw new NotFoundError("Usuário não encontrado", "id");
     }
 
     if (user.id !== deletedById)

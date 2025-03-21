@@ -13,14 +13,14 @@ export class UpdateFuelTypeUseCase {
   async execute(id: string, data: UpdateFuelTypeDTO, updatedById: string) {
     const fuelType = await this.fuelTypeRepository.findById(id);
     if (!fuelType)
-      throw new NotFoundError("Tipo de combustível não encontrado");
+      throw new NotFoundError("Tipo de combustível não encontrado", "id");
 
     const existsFuelType = data.name
       ? await this.fuelTypeRepository.findByName(data.name)
       : undefined;
 
     if (existsFuelType && existsFuelType.id !== id)
-      throw new ConflictError("Um tipo de combustível com esse nome já existe");
+      throw new ConflictError("Um tipo de combustível com esse nome já existe", "fuelType");
 
     return await this.fuelTypeRepository.update(id, data, updatedById);
   }

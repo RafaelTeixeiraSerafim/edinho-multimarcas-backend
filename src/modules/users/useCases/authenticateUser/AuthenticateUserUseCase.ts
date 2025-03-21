@@ -1,11 +1,10 @@
 import { AuthenticateUserDTO } from "@modules/users/dtos/AuthenticateUserDTO";
+import { AuthenticateUserResponseDTO } from "@modules/users/dtos/AuthenticateUserResponseDTO";
 import { IUserRepository } from "@modules/users/repositories/IUserRepository";
-import { inject, injectable } from "tsyringe";
+import { UnauthorizedError } from "@shared/infra/http/errors";
 import bcrypt from "bcrypt";
 import { sign } from "jsonwebtoken";
-import { AuthenticateUserResponseDTO } from "@modules/users/dtos/AuthenticateUserResponseDTO";
-import { UserMapper } from "@modules/users/mappers/UserMapper";
-import { NotFoundError, UnauthorizedError } from "@shared/infra/http/errors";
+import { inject, injectable } from "tsyringe";
 
 @injectable()
 export class AuthenticateUserUseCase {

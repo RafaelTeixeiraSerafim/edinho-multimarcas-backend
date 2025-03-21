@@ -22,9 +22,9 @@ export class CreateUserUseCase {
       : undefined;
 
     if (userByEmail)
-      throw new ConflictError("Usuário com esse email já existe");
+      throw new ConflictError("Usuário com esse email já existe", "email");
     if (userByNationalId)
-      throw new ConflictError("Usuário com esse CPF já existe");
+      throw new ConflictError("Usuário com esse CPF já existe", "nationalId");
 
     data.password = await generateHashedPassword(data.password);
 

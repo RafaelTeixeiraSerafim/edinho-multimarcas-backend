@@ -1,10 +1,8 @@
-import { container, inject, injectable } from "tsyringe";
-import { IBrandRepository } from "../../repositories/IBrandRepository";
-import { UpdateBrandDTO } from "@modules/brands/dtos/UpdateBrandDTO";
-import { ConflictError } from "@shared/infra/http/errors/ConflictError";
-import { NotFoundError } from "@shared/infra/http/errors";
 import { IModelRepository } from "@modules/models/repositories/IModelRepository";
 import { DeleteModelUseCase } from "@modules/models/useCases/deleteModel/DeleteModelUseCase";
+import { NotFoundError } from "@shared/infra/http/errors";
+import { container, inject, injectable } from "tsyringe";
+import { IBrandRepository } from "../../repositories/IBrandRepository";
 
 @injectable()
 export class DeleteBrandUseCase {
@@ -18,7 +16,7 @@ export class DeleteBrandUseCase {
     const brand = await this.brandRepository.findById(id);
 
     if (!brand || brand.isDeleted)
-      throw new NotFoundError("Marca não encontrada");
+      throw new NotFoundError("Marca não encontrada", "id");
 
     const deleteModelUseCase = container.resolve(DeleteModelUseCase);
     const models = await this.modelRepository.findByBrandId(id);

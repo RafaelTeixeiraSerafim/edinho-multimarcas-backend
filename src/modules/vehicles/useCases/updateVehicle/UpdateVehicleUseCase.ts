@@ -20,18 +20,18 @@ export class UpdateVehicleUseCase {
   ) {}
   async execute(id: string, data: UpdateVehicleDTO, updatedById: string) {
     const vehicle = await this.vehicleRepository.findById(id);
-    if (!vehicle) throw new NotFoundError("Veículo não encontrado");
+    if (!vehicle) throw new NotFoundError("Veículo não encontrado", "id");
 
     const existsVehicle = await this.vehicleRepository.findExistingVehicle(
       vehicle
     );
     if (existsVehicle && existsVehicle.id !== id)
-      throw new ConflictError("Um veículo com esses dados já existe");
+      throw new ConflictError("Um veículo com esses dados já existe", "vehicle");
 
     if (data.modelId) {
       const existsModel = await this.modelRepository.findById(data.modelId);
       if (!existsModel)
-        throw new NotFoundError("Um modelo com esse id não existe");
+        throw new NotFoundError("Um modelo com esse id não existe", "modelId");
     }
 
     if (data.fuelTypeId) {
@@ -40,7 +40,8 @@ export class UpdateVehicleUseCase {
       );
       if (!existsFuelType)
         throw new NotFoundError(
-          "Um tipo de combustível com esse id não existe"
+          "Um tipo de combustível com esse id não existe",
+          "fuelTypeId"
         );
     }
 

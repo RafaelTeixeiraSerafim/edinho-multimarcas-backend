@@ -22,17 +22,17 @@ export class CreateVehicleUseCase {
       data
     );
     if (existsVehicle)
-      throw new ConflictError("Um veículo com esses dados já existe");
+    throw new ConflictError("Um veículo com esses dados já existe", "vehicle");
 
     const existsModel = await this.modelRepository.findById(data.modelId);
     if (!existsModel)
-      throw new NotFoundError("Uma marca com esse id não existe");
+      throw new NotFoundError("Uma marca com esse id não existe", "modelId");
 
     const existsFuelType = await this.fuelTypeRepository.findById(
       data.fuelTypeId
     );
     if (!existsFuelType)
-      throw new NotFoundError("Um tipo de combustível com esse id não existe");
+      throw new NotFoundError("Um tipo de combustível com esse id não existe", "fuelTypeId");
 
     return await this.vehicleRepository.create(data, createdById);
   }

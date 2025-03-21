@@ -27,7 +27,7 @@ export class RefreshTokenUseCase {
     ) as IAuthTokenPayload;
 
     const user = await this.userRepository.findById(userId);
-    if (!user) throw new NotFoundError("Usuário não encontrado");
+    if (!user) throw new NotFoundError("Usuário não encontrado", "userId");
 
     if (user.refreshToken !== refreshToken)
       throw new UnauthorizedError("Token de atualização de autenticação inválido");
