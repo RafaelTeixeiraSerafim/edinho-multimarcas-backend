@@ -51,8 +51,6 @@ model FuelTypes {
   deletedBy    Users?     @relation("DeletedFuelTypes", fields: [deletedById], references: [id])
   deletedById  String?    @db.Uuid
   vehicles     Vehicles[]
-
-  // @@map("Fuel_Types")
 }
 
 model Brands {

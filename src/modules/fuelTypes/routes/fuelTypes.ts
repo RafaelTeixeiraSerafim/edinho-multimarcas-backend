@@ -7,7 +7,7 @@ import { validatePathParams } from "@shared/infra/http/middlewares/validatePathP
 import { IdPathParamDTO } from "@shared/dtos/IdPathParamDTO";
 import { UpdateFuelTypeDTO } from "../dtos/UpdateFuelTypeDTO";
 import { UpdateFuelTypeController } from "../useCases/updateFuelType/UpdateFuelTypeController";
-import { DeleteFuelTypeController } from "../useCases/DeleteFuelType/DeleteFuelTypeController";
+import { DeleteFuelTypeController } from "../useCases/deleteFuelType/DeleteFuelTypeController";
 import { validateQueryParams } from "@shared/infra/http/middlewares/validateQueryParams";
 import { PaginationQueryDTO } from "@shared/dtos/PaginationQueryDTO";
 import { ListFuelTypesController } from "../useCases/listFuelTypes/ListFuelTypesController";
