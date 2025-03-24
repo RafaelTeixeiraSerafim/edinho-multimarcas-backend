@@ -14,12 +14,12 @@ export class UpdateBrandUseCase {
     const brand = await this.brandRepository.findById(id);
     if (!brand) throw new NotFoundError("Marca não encontrada", "id");
 
-    const existsBrand = data.name
-      ? await this.brandRepository.findByName(data.name)
-      : undefined;
+    if (data.name) {
+      const existsBrand = await this.brandRepository.findByName(data.name);
 
-    if (existsBrand && existsBrand.id !== id)
-      throw new ConflictError("Uma marca com esse nome já existe", "brand");
+      if (existsBrand && existsBrand.id !== id)
+        throw new ConflictError("Uma marca com esse nome já existe", "brand");
+    }
 
     return await this.brandRepository.update(id, data, updatedById);
   }

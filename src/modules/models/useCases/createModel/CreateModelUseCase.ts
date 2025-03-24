@@ -1,9 +1,7 @@
 import { IBrandRepository } from "@modules/brands/repositories/IBrandRepository";
 import { CreateModelDTO } from "@modules/models/dtos/CreateModelDTO";
 import { IModelRepository } from "@modules/models/repositories/IModelRepository";
-import { IVehicleRepository } from "@modules/vehicles/repositories/IVehicleRepository";
-import { NotFoundError } from "@shared/infra/http/errors";
-import { ConflictError } from "@shared/infra/http/errors/ConflictError";
+import { ConflictError, NotFoundError } from "@shared/infra/http/errors";
 import { inject, injectable } from "tsyringe";
 
 @injectable()
@@ -19,7 +17,7 @@ export class CreateModelUseCase {
     if (existsModel)
       throw new ConflictError("Um modelo com esse nome já existe", "name");
 
-    const existsBrand = this.brandRepository.findById(data.brandId);
+    const existsBrand = await this.brandRepository.findById(data.brandId);
     if (!existsBrand)
       throw new NotFoundError("Uma marca com esse id não existe", "brandId");
 

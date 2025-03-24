@@ -38,7 +38,6 @@ describe("CreateFuelTypeController", () => {
         birthdate: null,
         contact: null,
         nationalId: null,
-        // Add other fields from the Users model as needed
       }, // Simulate an authenticated user
     };
     mockResponse = {
@@ -67,7 +66,6 @@ describe("CreateFuelTypeController", () => {
       isDeleted: false,
       updatedById: null,
       deletedById: null,
-      vehicles: [],
     };
 
     // Mock the use case to return the created fuel type

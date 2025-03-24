@@ -12,7 +12,7 @@ export class DeleteVehicleUseCase {
   async execute(id: string, deletedById: string) {
     const vehicle = await this.vehicleRepository.findById(id);
 
-    if (!vehicle || vehicle.isDeleted)
+    if (!vehicle)
       throw new NotFoundError("Veículo não encontrado", "id");
 
     if (vehicle.fipeCode)

@@ -2,28 +2,34 @@ import "reflect-metadata";
 import { ListFuelTypesController } from "@modules/fuelTypes/useCases/listFuelTypes/ListFuelTypesController";
 import { ListFuelTypesUseCase } from "@modules/fuelTypes/useCases/listFuelTypes/ListFuelTypesUseCase";
 import { NextFunction, Request, Response } from "express";
+import { container } from "tsyringe";
 
-// Mock the ListFuelTypesUseCase
+// Mock the ListFuelTypesUseCase and tsyringe container
 jest.mock("@modules/fuelTypes/useCases/listFuelTypes/ListFuelTypesUseCase");
 
 describe("ListFuelTypesController", () => {
-  let listFuelTypesController: ListFuelTypesController;
+  let controller: ListFuelTypesController;
   let mockRequest: Partial<Request>;
   let mockResponse: Partial<Response>;
-  let mockNext: NextFunction;
+  let mockNext: jest.MockedFunction<NextFunction>;
+  let mockUseCase: jest.Mocked<ListFuelTypesUseCase>;
 
   beforeEach(() => {
-    // Clear all instances and calls to constructor and all methods
     jest.clearAllMocks();
 
-    // Initialize the controller
-    listFuelTypesController = new ListFuelTypesController();
+    mockUseCase = {
+      execute: jest.fn(),
+    } as any;
 
-    // Mock request, response, and next function
+    // Mock the constructor
+    (ListFuelTypesUseCase as jest.Mock).mockImplementation(() => mockUseCase);
+
+    controller = new ListFuelTypesController();
+
     mockRequest = {
       query: {
-        page: 1, // Already transformed to a number by the DTO
-        pageSize: 10, // Already transformed to a number by the DTO
+        page: 1,
+        pageSize: 10,
       } as any,
     };
 
@@ -35,50 +41,77 @@ describe("ListFuelTypesController", () => {
     mockNext = jest.fn();
   });
 
-  it("deve retornar uma lista de tipos de combustível com status 200", async () => {
-    // Mock the execute method of ListFuelTypesUseCase
-    const mockFuelTypes = [
-      { id: "1", name: "Gasoline", abbreviation: "GAS" },
-      { id: "2", name: "Diesel", abbreviation: "DSL" },
+  // Test 1: Success case with query params
+  it("should return fuel types with status 200", async () => {
+    const mockData = [
+      {
+        id: "1",
+        name: "Gasoline",
+        abbreviation: "G",
+        createdById: "user-123",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        deletedAt: null,
+        isDeleted: false,
+        updatedById: null,
+        deletedById: null,
+      },
     ];
+    mockRequest = { query: { page: 2, pageSize: 20 } as any };
+    mockUseCase.execute.mockResolvedValue(mockData);
 
-    const mockExecute = jest.fn().mockResolvedValue(mockFuelTypes);
-    (ListFuelTypesUseCase as jest.Mock).mockImplementation(() => ({
-      execute: mockExecute,
-    }));
-
-    // Call the handle method
-    await listFuelTypesController.handle(
+    await controller.handle(
       mockRequest as Request,
       mockResponse as Response,
       mockNext
     );
 
-    // Assertions
-    expect(mockExecute).toHaveBeenCalledWith(1, 10); // Ensure numbers are passed
+    expect(mockUseCase.execute).toHaveBeenCalledWith(2, 20);
     expect(mockResponse.status).toHaveBeenCalledWith(200);
-    expect(mockResponse.json).toHaveBeenCalledWith({
-      fuelTypes: mockFuelTypes,
-    });
+    expect(mockResponse.json).toHaveBeenCalledWith({ fuelTypes: mockData });
   });
 
-  it("deve chamar next com o erro se o use case mandar um erro", async () => {
-    // Mock the execute method of ListFuelTypesUseCase to throw an error
-    const mockError = new Error("Test error");
-    const mockExecute = jest.fn().mockRejectedValue(mockError);
-    (ListFuelTypesUseCase as jest.Mock).mockImplementation(() => ({
-      execute: mockExecute,
-    }));
+  // Test 2: Default pagination values
+  it("should use default pagination when no query params", async () => {
+    const mockData = [
+      {
+        id: "1",
+        name: "Diesel",
+        abbreviation: "D",
+        createdById: "user-123",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        deletedAt: null,
+        isDeleted: false,
+        updatedById: null,
+        deletedById: null,
+      },
+    ];
+    mockUseCase.execute.mockResolvedValue(mockData);
+    mockRequest = { query: {} }; // Empty query
 
-    // Call the handle method
-    await listFuelTypesController.handle(
+    await controller.handle(
       mockRequest as Request,
       mockResponse as Response,
       mockNext
     );
 
-    // Assertions
-    expect(mockExecute).toHaveBeenCalledWith(1, 10); // Ensure numbers are passed
+    expect(mockUseCase.execute).toHaveBeenCalledWith(1, 10); // Default values
+  });
+
+  // Test 3: Error handling
+  it("should call next with error when use case throws", async () => {
+    const mockError = new Error("Database error");
+    mockUseCase.execute.mockRejectedValue(mockError);
+    mockRequest = { query: { page: 1 } as any };
+
+    await controller.handle(
+      mockRequest as Request,
+      mockResponse as Response,
+      mockNext
+    );
+
     expect(mockNext).toHaveBeenCalledWith(mockError);
+    expect(mockResponse.json).not.toHaveBeenCalled();
   });
 });

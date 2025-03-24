@@ -1,7 +1,5 @@
 import { inject, injectable } from "tsyringe";
 import { IBrandRepository } from "../../repositories/IBrandRepository";
-import { UpdateBrandDTO } from "@modules/brands/dtos/UpdateBrandDTO";
-import { ConflictError } from "@shared/infra/http/errors/ConflictError";
 
 @injectable()
 export class ListBrandsUseCase {

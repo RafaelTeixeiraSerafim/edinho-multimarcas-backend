@@ -1,8 +1,7 @@
-import { PaginationQueryDTO } from "@shared/dtos/PaginationQueryDTO";
+import { UnauthorizedError } from "@shared/infra/http/errors";
 import { NextFunction, Request, Response } from "express";
 import { container } from "tsyringe";
 import { DeleteBrandUseCase } from "./DeleteBrandUseCase";
-import { UnauthorizedError } from "@shared/infra/http/errors";
 
 export class DeleteBrandController {
   async handle(request: Request, response: Response, next: NextFunction) {

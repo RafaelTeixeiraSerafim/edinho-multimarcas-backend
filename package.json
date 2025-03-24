@@ -4,6 +4,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
+    "test:coverage": "jest --coverage",
     "dev": "ts-node-dev -r tsconfig-paths/register src/shared/infra/http/server.ts"
   },
   "author": "",

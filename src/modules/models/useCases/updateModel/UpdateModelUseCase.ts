@@ -17,12 +17,12 @@ export class UpdateModelUseCase {
     const model = await this.modelRepository.findById(id);
     if (!model) throw new NotFoundError("Modelo não encontrado", "id");
 
-    const existsModel = data.name
-      ? await this.modelRepository.findByName(data.name)
-      : undefined;
+    if (data.name) {
+      const existsModel = await this.modelRepository.findByName(data.name);
 
-    if (existsModel && existsModel.id !== id)
-      throw new ConflictError("Um modelo com esse nome já existe", "model");
+      if (existsModel && existsModel.id !== id)
+        throw new ConflictError("Um modelo com esse nome já existe", "model");
+    }
 
     if (data.brandId) {
       const existsBrand = await this.brandRepository.findById(data.brandId);
