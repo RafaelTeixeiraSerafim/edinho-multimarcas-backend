@@ -67,7 +67,7 @@ usersRoutes.post(
 );
 
 usersRoutes.post(
-  "/auth/refresh",
+  "/auth/refresh-token",
   validateDTO(RefreshTokenDTO),
   refreshTokenController.handle
 );
