@@ -1,6 +1,7 @@
+import auth from "@config/auth";
+import { AuthenticateUserResponseDTO } from "@modules/users/dtos/AuthenticateUserResponseDTO";
 import { RefreshTokenDTO } from "@modules/users/dtos/RefreshTokenDTO";
 import { IAuthTokenPayload } from "@modules/users/interfaces/IAuthTokenPayload";
-import { UserMapper } from "@modules/users/mappers/UserMapper";
 import { IUserRepository } from "@modules/users/repositories/IUserRepository";
 import { NotFoundError, UnauthorizedError } from "@shared/infra/http/errors";
 import { sign, verify } from "jsonwebtoken";
@@ -13,7 +14,7 @@ export class RefreshTokenUseCase {
     private userRepository: IUserRepository
   ) {}
 
-  async execute(data: RefreshTokenDTO) {
+  async execute(data: RefreshTokenDTO): Promise<AuthenticateUserResponseDTO> {
     const refreshToken = data.refreshToken;
 
     const tokenSecret = process.env.AUTH_TOKEN_SECRET;
@@ -30,16 +31,18 @@ export class RefreshTokenUseCase {
     if (!user) throw new NotFoundError("Usuário não encontrado", "userId");
 
     if (user.refreshToken !== refreshToken)
-      throw new UnauthorizedError("Token de atualização de autenticação inválido");
+      throw new UnauthorizedError(
+        "Token de atualização de autenticação inválido"
+      );
 
     const payload = {
       userId: user.id,
     };
 
-    const newToken = sign(payload, tokenSecret, { expiresIn: "15m" });
+    const newToken = sign(payload, tokenSecret, { expiresIn: `${auth.accessTokenExpiresInMinutes}m` });
 
     const newRefreshToken = sign(payload, refreshTokenSecret, {
-      expiresIn: "12h",
+      expiresIn: `${auth.refreshTokenExpiresInHours}h`,
     });
 
     const refreshedUser = await this.userRepository.refreshToken(
@@ -49,9 +52,10 @@ export class RefreshTokenUseCase {
     );
 
     return {
-      token: newToken,
+      accessToken: newToken,
       refreshToken: newRefreshToken,
       user: refreshedUser,
+      tokenExpiry: Date.now() + auth.accessTokenExpiresInMinutes * 60 * 1000,
     };
   }
 }

@@ -8,5 +8,6 @@ module.exports = {
     "^@shared/(.*)$": "<rootDir>/src/shared/$1",
     "^@modules/(.*)$": "<rootDir>/src/modules/$1",
     "^@utils/(.*)$": "<rootDir>/src/utils/$1",
+    "^@config/(.*)$": "<rootDir>/src/config/$1",
   },
 };

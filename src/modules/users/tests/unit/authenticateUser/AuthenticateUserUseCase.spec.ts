@@ -4,6 +4,7 @@ import { UnauthorizedError } from "@shared/infra/http/errors";
 import bcrypt from "bcrypt";
 import { sign } from "jsonwebtoken";
 import { AuthenticateUserUseCase } from "@modules/users/useCases/authenticateUser/AuthenticateUserUseCase";
+import auth from "@config/auth";
 
 // Mock the dependencies
 jest.mock("bcrypt");
@@ -18,6 +19,8 @@ describe("AuthenticateUserUseCase", () => {
 
   // Mock environment variables
   const originalEnv = process.env;
+
+  const mockNow = Date.now();
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -35,6 +38,8 @@ describe("AuthenticateUserUseCase", () => {
     } as any;
 
     authenticateUserUseCase = new AuthenticateUserUseCase(mockUserRepository);
+
+    jest.spyOn(Date, "now").mockImplementation(() => mockNow)
   });
 
   afterEach(() => {
@@ -88,6 +93,7 @@ describe("AuthenticateUserUseCase", () => {
     expect(result).toEqual({
       accessToken: "mocked-access-token",
       refreshToken: "mocked-refresh-token",
+      tokenExpiry: mockNow + auth.accessTokenExpiresInMinutes * 60 * 1000,
       user: {
         ...mockUser,
         refreshToken: "mocked-refresh-token",
@@ -103,9 +109,9 @@ describe("AuthenticateUserUseCase", () => {
 
     mockUserRepository.findByEmail.mockResolvedValue(null);
 
-    await expect(
-      authenticateUserUseCase.execute(authData)
-    ).rejects.toThrow(UnauthorizedError);
+    await expect(authenticateUserUseCase.execute(authData)).rejects.toThrow(
+      UnauthorizedError
+    );
   });
 
   it("deve lançar erro quando senha está incorreta", async () => {
@@ -118,9 +124,9 @@ describe("AuthenticateUserUseCase", () => {
     mockUserRepository.findByEmail.mockResolvedValue(mockUser);
     mockBcrypt.compare.mockResolvedValue(false as never);
 
-    await expect(
-      authenticateUserUseCase.execute(authData)
-    ).rejects.toThrow(UnauthorizedError);
+    await expect(authenticateUserUseCase.execute(authData)).rejects.toThrow(
+      UnauthorizedError
+    );
   });
 
   it("deve lançar erro quando variáveis de ambiente estão ausentes", async () => {
@@ -136,8 +142,8 @@ describe("AuthenticateUserUseCase", () => {
     mockUserRepository.findByEmail.mockResolvedValue(mockUser);
     mockBcrypt.compare.mockResolvedValue(true as never);
 
-    await expect(
-      authenticateUserUseCase.execute(authData)
-    ).rejects.toThrow("Variáveis de ambiente de autenticação ausentes");
+    await expect(authenticateUserUseCase.execute(authData)).rejects.toThrow(
+      "Variáveis de ambiente de autenticação ausentes"
+    );
   });
 });

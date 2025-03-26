@@ -1,3 +1,4 @@
+import auth from "@config/auth";
 import { AuthenticateUserDTO } from "@modules/users/dtos/AuthenticateUserDTO";
 import { AuthenticateUserResponseDTO } from "@modules/users/dtos/AuthenticateUserResponseDTO";
 import { IUserRepository } from "@modules/users/repositories/IUserRepository";
@@ -34,10 +35,10 @@ export class AuthenticateUserUseCase {
     if (!tokenSecret || !refreshTokenSecret)
       throw new Error("Variáveis de ambiente de autenticação ausentes");
 
-    const accessToken = sign(payload, tokenSecret, { expiresIn: "15m" });
+    const accessToken = sign(payload, tokenSecret, { expiresIn: `${auth.accessTokenExpiresInMinutes}m` });
 
     const refreshToken = sign(payload, refreshTokenSecret, {
-      expiresIn: "12h",
+      expiresIn: `${auth.refreshTokenExpiresInHours}h`,
     });
 
     const refreshedUser = await this.userRepository.refreshToken(
@@ -50,6 +51,7 @@ export class AuthenticateUserUseCase {
       accessToken,
       refreshToken,
       user: refreshedUser,
+      tokenExpiry: Date.now() + auth.accessTokenExpiresInMinutes * 60 * 1000,
     };
   }
 }

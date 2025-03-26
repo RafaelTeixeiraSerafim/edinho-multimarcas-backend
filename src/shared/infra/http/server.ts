@@ -4,7 +4,7 @@ import { app } from "@shared/infra/http/app";
 
 const httpServer = createServer(app);
 
-const PORT = 3000;
+const PORT = 5000;
 
 httpServer.listen(PORT, () => {
   console.log(`HTTP server running on port ${PORT}!`);

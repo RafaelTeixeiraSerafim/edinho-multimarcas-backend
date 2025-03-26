@@ -47,6 +47,7 @@ describe("AuthenticateUserController", () => {
   const createMockAuthResponse = () => ({
     accessToken: "mocked-access-token",
     refreshToken: "mocked-refresh-token",
+    tokenExpiry: 10000,
     user: {
       id: "user-id",
       name: "Test User",
