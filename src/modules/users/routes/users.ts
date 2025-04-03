@@ -16,6 +16,8 @@ import { ensureAuthenticated } from "@shared/infra/http/middlewares/ensureAuthen
 import { RefreshTokenDTO } from "../dtos/RefreshTokenDTO";
 import { RefreshTokenController } from "../useCases/refreshToken/RefreshTokenController";
 import { optionalAuthenticate } from "@shared/infra/http/middlewares/optionalAuthenticate";
+import { ResetPasswordDTO } from "../dtos/RecoverPasswordDTO";
+import { ResetPasswordController } from "../useCases/resetPassword/ResetPasswordController";
 
 const usersRoutes = Router();
 
@@ -31,15 +33,17 @@ const authenticateUserController = new AuthenticateUserController();
 
 const refreshTokenController = new RefreshTokenController();
 
+const resetPasswordController = new ResetPasswordController();
+
 usersRoutes.post(
-  "/",
+  "/users",
   optionalAuthenticate,
   validateDTO(CreateUserDTO),
   createUserController.handle
 );
 
 usersRoutes.patch(
-  "/:id",
+  "/users/:id",
   ensureAuthenticated,
   validatePathParams(IdPathParamDTO),
   validateDTO(UpdateUserDTO),
@@ -47,29 +51,35 @@ usersRoutes.patch(
 );
 
 usersRoutes.delete(
-  "/:id",
+  "/users/:id",
   ensureAuthenticated,
   validatePathParams(IdPathParamDTO),
   deleteUserController.handle
 );
 
 usersRoutes.get(
-  "/",
+  "/users",
   ensureAuthenticated,
   validateQueryParams(PaginationQueryDTO),
   listUsersController.handle
 );
 
 usersRoutes.post(
-  "/auth",
+  "/users/auth",
   validateDTO(AuthenticateUserDTO),
   authenticateUserController.handle
 );
 
 usersRoutes.post(
-  "/auth/refresh-token",
+  "/users/auth/refresh-token",
   validateDTO(RefreshTokenDTO),
   refreshTokenController.handle
+);
+
+usersRoutes.post(
+  "/users/auth/reset-password",
+  validateDTO(ResetPasswordDTO),
+  resetPasswordController.handle
 );
 
 export { usersRoutes };

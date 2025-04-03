@@ -11,6 +11,8 @@ import { CreateModelDTO } from "../dtos/CreateModelDTO";
 import { UpdateModelController } from "../useCases/updateModel/UpdateModelController";
 import { DeleteModelController } from "../useCases/deleteModel/DeleteModelController";
 import { ListModelsController } from "../useCases/listModels/ListModelsController";
+import { BrandIdPathParamDTO } from "../dtos/BrandIdPathParamDTO";
+import { GetModelsByBrandIdController } from "../useCases/getModelsByBrandId/GetModelsByBrandIdController";
 
 const createModelController = new CreateModelController();
 
@@ -20,17 +22,19 @@ const deleteModelController = new DeleteModelController();
 
 const listModelsController = new ListModelsController();
 
+const getModelByBrandIdController = new GetModelsByBrandIdController();
+
 const modelRoutes = Router();
 
 modelRoutes.post(
-  "/",
+  "/models",
   ensureAuthenticated,
   validateDTO(CreateModelDTO),
   createModelController.handle
 );
 
 modelRoutes.patch(
-  "/:id",
+  "/models/:id",
   ensureAuthenticated,
   validatePathParams(IdPathParamDTO),
   validateDTO(UpdateModelDTO),
@@ -38,17 +42,22 @@ modelRoutes.patch(
 );
 
 modelRoutes.delete(
-  "/:id",
+  "/models/:id",
   ensureAuthenticated,
   validatePathParams(IdPathParamDTO),
   deleteModelController.handle
 );
 
 modelRoutes.get(
-  "/",
-  ensureAuthenticated,
+  "/models",
   validateQueryParams(PaginationQueryDTO),
   listModelsController.handle
+);
+
+modelRoutes.get(
+  "/brands/:brandId/models",
+  validatePathParams(BrandIdPathParamDTO),
+  getModelByBrandIdController.handle
 );
 
 export { modelRoutes };

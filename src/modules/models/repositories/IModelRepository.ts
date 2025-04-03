@@ -1,4 +1,5 @@
 import { CreateModelDTO } from "../dtos/CreateModelDTO";
+import { ModelResponseDTO } from "../dtos/ModelResponseDTO";
 import { UpdateModelDTO } from "../dtos/UpdateModelDTO";
 import { IModel } from "../interfaces/IModel";
 
@@ -9,7 +10,7 @@ export interface IModelRepository {
     data: UpdateModelDTO,
     updatedById: string
   ): Promise<IModel>;
-  list(page: number, pageSize: number): Promise<IModel[]>;
+  list(page: number, pageSize: number): Promise<ModelResponseDTO[]>;
   delete(id: string, deletedById: string): Promise<void>;
   findById(id: string): Promise<IModel | null>;
   findByBrandId(brandId: string): Promise<IModel[]>;

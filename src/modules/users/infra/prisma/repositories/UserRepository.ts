@@ -1,4 +1,5 @@
 import { CreateUserDTO } from "@modules/users/dtos/CreateUserDTO";
+import { ResetPasswordDTO } from "@modules/users/dtos/RecoverPasswordDTO";
 import { UpdateUserDTO } from "@modules/users/dtos/UpdateUserDTO";
 import { UserResponseDTO } from "@modules/users/dtos/UserResponseDTO";
 import { IUser } from "@modules/users/interfaces/IUser";
@@ -54,6 +55,20 @@ export class UserRepository implements IUserRepository {
       omit: {
         password: true,
         refreshToken: true,
+      },
+    });
+  }
+
+  async recoverPassword(
+    id: string,
+    data: ResetPasswordDTO,
+    updatedById: string
+  ): Promise<void> {
+    await prisma.users.update({
+      where: { id },
+      data: {
+        password: data.password,
+        updatedById,
       },
     });
   }

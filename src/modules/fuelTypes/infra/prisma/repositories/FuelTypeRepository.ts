@@ -1,4 +1,5 @@
 import { CreateFuelTypeDTO } from "@modules/fuelTypes/dtos/CreateFuelTypeDTO";
+import { FuelTypeResponseDTO } from "@modules/fuelTypes/dtos/FuelTypeResponseDTO";
 import { UpdateFuelTypeDTO } from "@modules/fuelTypes/dtos/UpdateFuelTypeDTO";
 import { IFuelType } from "@modules/fuelTypes/interfaces/IFuelType";
 import { IFuelTypeRepository } from "@modules/fuelTypes/repositories/IFuelTypeRepository";
@@ -27,7 +28,7 @@ export class FuelTypeRepository implements IFuelTypeRepository {
     });
   }
 
-  async list(page: number, pageSize: number): Promise<IFuelType[]> {
+  async list(page: number, pageSize: number): Promise<FuelTypeResponseDTO[]> {
     return await prisma.fuelTypes.findMany({
       take: pageSize,
       skip: pageSize * (page - 1),
@@ -35,14 +36,23 @@ export class FuelTypeRepository implements IFuelTypeRepository {
       where: {
         isDeleted: false,
       },
+      omit: {
+        deletedAt: true,
+        deletedById: true,
+        isDeleted: true,
+      },
     });
   }
 
   async findByName(name: string): Promise<IFuelType | null> {
-    return await prisma.fuelTypes.findFirst({ where: { name, isDeleted: false } });
+    return await prisma.fuelTypes.findFirst({
+      where: { name, isDeleted: false },
+    });
   }
 
   async findById(id: string): Promise<IFuelType | null> {
-    return await prisma.fuelTypes.findUnique({ where: { id, isDeleted: false } });
+    return await prisma.fuelTypes.findUnique({
+      where: { id, isDeleted: false },
+    });
   }
 }

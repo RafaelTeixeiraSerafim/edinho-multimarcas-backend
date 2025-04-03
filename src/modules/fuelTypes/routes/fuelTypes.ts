@@ -23,14 +23,14 @@ const listFuelTypesController = new ListFuelTypesController();
 const fuelTypeRoutes = Router();
 
 fuelTypeRoutes.post(
-  "/",
+  "/fuel-types",
   ensureAuthenticated,
   validateDTO(CreateFuelTypeDTO),
   createFuelTypeController.handle
 );
 
 fuelTypeRoutes.patch(
-  "/:id",
+  "/fuel-types/:id",
   ensureAuthenticated,
   validatePathParams(IdPathParamDTO),
   validateDTO(UpdateFuelTypeDTO),
@@ -38,15 +38,14 @@ fuelTypeRoutes.patch(
 );
 
 fuelTypeRoutes.delete(
-  "/:id",
+  "/fuel-types/:id",
   ensureAuthenticated,
   validatePathParams(IdPathParamDTO),
   deleteFuelTypeController.handle
 );
 
 fuelTypeRoutes.get(
-  "/",
-  ensureAuthenticated,
+  "/fuel-types",
   validateQueryParams(PaginationQueryDTO),
   listFuelTypesController.handle
 );

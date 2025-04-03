@@ -11,6 +11,8 @@ import { validateQueryParams } from "@shared/infra/http/middlewares/validateQuer
 import { PaginationQueryDTO } from "@shared/dtos/PaginationQueryDTO";
 import { ListVehiclesController } from "../useCases/listVehicles/ListVehiclesController";
 import { DeleteVehicleController } from "../useCases/deleteVehicle/DeleteVehicleController";
+import { GetVehiclesByModelIdController } from "../useCases/getVehiclesByModelId/GetVehiclesByModelIdController";
+import { ModelIdPathParamDTO } from "../dtos/ModelIdPathParamDTO";
 
 const createVehicleController = new CreateVehicleController();
 
@@ -20,17 +22,19 @@ const deleteVehicleController = new DeleteVehicleController();
 
 const listVehiclesController = new ListVehiclesController();
 
+const getVehiclesByModelIdController = new GetVehiclesByModelIdController();
+
 const vehicleRoutes = Router();
 
 vehicleRoutes.post(
-  "/",
+  "/vehicles",
   ensureAuthenticated,
   validateDTO(CreateVehicleDTO),
   createVehicleController.handle
 );
 
 vehicleRoutes.patch(
-  "/:id",
+  "/vehicles/:id",
   ensureAuthenticated,
   validatePathParams(IdPathParamDTO),
   validateDTO(UpdateVehicleDTO),
@@ -38,18 +42,22 @@ vehicleRoutes.patch(
 );
 
 vehicleRoutes.delete(
-  "/:id",
+  "/vehicles/:id",
   ensureAuthenticated,
   validatePathParams(IdPathParamDTO),
   deleteVehicleController.handle
 );
 
 vehicleRoutes.get(
-  "/",
-  ensureAuthenticated,
+  "/vehicles",
   validateQueryParams(PaginationQueryDTO),
   listVehiclesController.handle
 );
 
-export { vehicleRoutes };
+vehicleRoutes.get(
+  "/models/:modelId/vehicles",
+  validatePathParams(ModelIdPathParamDTO),
+  getVehiclesByModelIdController.handle
+);
 
+export { vehicleRoutes };

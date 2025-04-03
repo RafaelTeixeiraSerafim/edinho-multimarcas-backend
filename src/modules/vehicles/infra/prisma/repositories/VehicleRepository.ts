@@ -1,5 +1,6 @@
 import { CreateVehicleDTO } from "@modules/vehicles/dtos/CreateVehicleDTO";
 import { UpdateVehicleDTO } from "@modules/vehicles/dtos/UpdateVehicleDTO";
+import { VehicleResponseDTO } from "@modules/vehicles/dtos/VehicleResponseDTO";
 import { IPartialVehicle } from "@modules/vehicles/interfaces/IPartialVehicle";
 import { IVehicle } from "@modules/vehicles/interfaces/IVehicle";
 import { IVehicleRepository } from "@modules/vehicles/repositories/IVehicleRepository";
@@ -28,12 +29,33 @@ export class VehicleRepository implements IVehicleRepository {
     });
   }
 
-  async list(page: number, pageSize: number): Promise<IVehicle[]> {
+  async list(page: number, pageSize: number): Promise<VehicleResponseDTO[]> {
     return await prisma.vehicles.findMany({
       where: { isDeleted: false },
       skip: pageSize * (page - 1),
       take: pageSize,
       orderBy: { createdAt: "asc" },
+      select: {
+        id: true,
+        fipeCode: true,
+        value: true,
+        referenceMonth: true,
+        referenceYear: true,
+        vehicleYear: true,
+        createdAt: true,
+        fuelTypeId: true,
+        fuelType: {
+          omit: {
+            deletedAt: true,
+            deletedById: true,
+            isDeleted: true,
+          },
+        },
+        updatedAt: true,
+        modelId: true,
+        createdById: true,
+        updatedById: true,
+      },
     });
   }
 
@@ -49,15 +71,34 @@ export class VehicleRepository implements IVehicleRepository {
     });
   }
 
-  async findByModelId(modelId: string): Promise<IVehicle[]> {
+  async findByModelId(modelId: string): Promise<VehicleResponseDTO[]> {
     return await prisma.vehicles.findMany({
       where: { modelId, isDeleted: false },
+      select: {
+        id: true,
+        fipeCode: true,
+        value: true,
+        referenceMonth: true,
+        referenceYear: true,
+        vehicleYear: true,
+        createdAt: true,
+        fuelTypeId: true,
+        fuelType: {
+          omit: {
+            deletedAt: true,
+            deletedById: true,
+            isDeleted: true,
+          },
+        },
+        updatedAt: true,
+        modelId: true,
+        createdById: true,
+        updatedById: true,
+      },
     });
   }
 
-  async findExistingVehicle(
-    data: IPartialVehicle
-  ): Promise<IVehicle | null> {
+  async findExistingVehicle(data: IPartialVehicle): Promise<IVehicle | null> {
     return await prisma.vehicles.findFirst({
       where: {
         value: data.value,

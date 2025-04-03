@@ -1,3 +1,4 @@
+import { BrandResponseDTO } from "../dtos/BrandResponseDTO";
 import { CreateBrandDTO } from "../dtos/CreateBrandDTO";
 import { UpdateBrandDTO } from "../dtos/UpdateBrandDTO";
 import { IBrand } from "../interfaces/IBrand";
@@ -10,7 +11,7 @@ export interface IBrandRepository {
     updatedById: string
   ): Promise<IBrand>;
   delete(id: string, deletedById: string): Promise<void>;
-  list(page: number, pageSize: number): Promise<IBrand[]>;
+  list(page: number, pageSize: number): Promise<BrandResponseDTO[]>;
   findById(id: string): Promise<IBrand | null>;
   findByName(name: string): Promise<IBrand | null>;
 }

@@ -7,12 +7,16 @@ import { Router } from "express";
 
 const routes = Router();
 
-routes.use("/vehicles", vehicleRoutes);
-routes.use("/users", userRoutes);
-routes.use("/fuel-types", fuelTypeRoutes);
-routes.use("/brands", brandRoutes);
-routes.use("/models", modelRoutes);
+const routePreset = "/api/v1";
 
-routes.get("/healthcheck", (_, response) => response.sendStatus(200));
+routes.use(routePreset, vehicleRoutes);
+routes.use(routePreset, userRoutes);
+routes.use(routePreset, fuelTypeRoutes);
+routes.use(routePreset, brandRoutes);
+routes.use(routePreset, modelRoutes);
+
+routes.get(routePreset + "/healthcheck", (_, response) =>
+  response.sendStatus(200)
+);
 
 export { routes };

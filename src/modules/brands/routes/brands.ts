@@ -7,7 +7,6 @@ import { IdPathParamDTO } from "@shared/dtos/IdPathParamDTO";
 import { UpdateBrandDTO } from "../dtos/UpdateBrandDTO";
 import { UpdateBrandController } from "../useCases/updateBrand/UpdateBrandController";
 import { validatePathParams } from "@shared/infra/http/middlewares/validatePathParams";
-import { errorManager } from "@shared/infra/http/middlewares/errorManager";
 import { validateQueryParams } from "@shared/infra/http/middlewares/validateQueryParams";
 import { PaginationQueryDTO } from "@shared/dtos/PaginationQueryDTO";
 import { ListBrandsController } from "../useCases/listBrands/ListBrandsController";
@@ -24,14 +23,14 @@ const deleteBrandController = new DeleteBrandController();
 const brandsRoutes = Router();
 
 brandsRoutes.post(
-  "/",
+  "/brands",
   ensureAuthenticated,
   validateDTO(CreateBrandDTO),
   createBrandController.handle
 );
 
 brandsRoutes.patch(
-  "/:id",
+  "/brands/:id",
   ensureAuthenticated,
   validatePathParams(IdPathParamDTO),
   validateDTO(UpdateBrandDTO),
@@ -39,15 +38,14 @@ brandsRoutes.patch(
 );
 
 brandsRoutes.delete(
-  "/:id",
+  "/brands/:id",
   ensureAuthenticated,
   validatePathParams(IdPathParamDTO),
   deleteBrandController.handle
 );
 
 brandsRoutes.get(
-  "/",
-  ensureAuthenticated,
+  "/brands",
   validateQueryParams(PaginationQueryDTO),
   listBrandsController.handle
 );

@@ -1,4 +1,5 @@
 import { CreateModelDTO } from "@modules/models/dtos/CreateModelDTO";
+import { ModelResponseDTO } from "@modules/models/dtos/ModelResponseDTO";
 import { UpdateModelDTO } from "@modules/models/dtos/UpdateModelDTO";
 import { IModel } from "@modules/models/interfaces/IModel";
 import { IModelRepository } from "@modules/models/repositories/IModelRepository";
@@ -27,13 +28,18 @@ export class ModelRepository implements IModelRepository {
     });
   }
 
-  async list(page: number, pageSize: number): Promise<IModel[]> {
+  async list(page: number, pageSize: number): Promise<ModelResponseDTO[]> {
     return await prisma.models.findMany({
       take: pageSize,
       skip: pageSize * (page - 1),
       orderBy: { createdAt: "asc" },
       where: {
         isDeleted: false,
+      },
+      omit: {
+        deletedAt: true,
+        deletedById: true,
+        isDeleted: true,
       },
     });
   }

@@ -1,3 +1,4 @@
+import { BrandResponseDTO } from "@modules/brands/dtos/BrandResponseDTO";
 import { CreateBrandDTO } from "@modules/brands/dtos/CreateBrandDTO";
 import { UpdateBrandDTO } from "@modules/brands/dtos/UpdateBrandDTO";
 import { IBrand } from "@modules/brands/interfaces/IBrand";
@@ -27,13 +28,18 @@ export class BrandRepository implements IBrandRepository {
     });
   }
 
-  async list(page: number, pageSize: number): Promise<IBrand[]> {
+  async list(page: number, pageSize: number): Promise<BrandResponseDTO[]> {
     return await prisma.brands.findMany({
       take: pageSize,
       skip: pageSize * (page - 1),
       orderBy: { createdAt: "asc" },
       where: {
         isDeleted: false,
+      },
+      omit: {
+        deletedAt: true,
+        deletedById: true,
+        isDeleted: true,
       },
     });
   }
