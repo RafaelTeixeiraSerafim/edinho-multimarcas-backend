@@ -1,4 +1,4 @@
-import { UnauthorizedError, ValidationError } from "@shared/infra/http/errors";
+import { UnauthorizedError, BadRequestError } from "@shared/infra/http/errors";
 import { NextFunction, Request, Response } from "express";
 import { container } from "tsyringe";
 import { UpdateUserUseCase } from "./UpdateUserUseCase";
@@ -12,7 +12,7 @@ export class UpdateUserController {
     try {
       if (!updatedById) throw new UnauthorizedError("Usuário não autenticado");
       if (!Object.keys(data).length)
-        throw new ValidationError("Corpo da requisição não pode estar vazio");
+        throw new BadRequestError("Corpo da requisição não pode estar vazio");
 
       const updateUserUseCase = container.resolve(UpdateUserUseCase);
       const updatedUser = await updateUserUseCase.execute(

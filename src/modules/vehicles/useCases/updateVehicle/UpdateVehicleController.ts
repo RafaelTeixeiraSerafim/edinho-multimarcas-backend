@@ -1,5 +1,5 @@
 import { UpdateVehicleDTO } from "@modules/vehicles/dtos/UpdateVehicleDTO";
-import { UnauthorizedError, ValidationError } from "@shared/infra/http/errors";
+import { UnauthorizedError, BadRequestError } from "@shared/infra/http/errors";
 import { NextFunction, Request, Response } from "express";
 import { container } from "tsyringe";
 import { UpdateVehicleUseCase } from "./UpdateVehicleUseCase";
@@ -13,7 +13,7 @@ export class UpdateVehicleController {
     try {
       if (!updatedById) throw new UnauthorizedError("Usuário não autenticado");
       if (!Object.keys(data).length)
-        throw new ValidationError("Corpo da requisição não pode estar vazio");
+        throw new BadRequestError("Corpo da requisição não pode estar vazio");
 
       const updateVehicleUseCase = container.resolve(UpdateVehicleUseCase);
       const updatedVehicle = await updateVehicleUseCase.execute(

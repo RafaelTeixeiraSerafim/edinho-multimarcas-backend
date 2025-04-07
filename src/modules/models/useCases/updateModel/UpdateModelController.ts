@@ -5,7 +5,7 @@ import { UpdateModelDTO } from "@modules/models/dtos/UpdateModelDTO";
 import {
   NotFoundError,
   UnauthorizedError,
-  ValidationError,
+  BadRequestError,
 } from "@shared/infra/http/errors";
 
 export class UpdateModelController {
@@ -17,7 +17,7 @@ export class UpdateModelController {
     try {
       if (!updatedById) throw new UnauthorizedError("Usuário não autenticado");
       if (!Object.keys(data).length)
-        throw new ValidationError("Corpo da requisição não pode estar vazio");
+        throw new BadRequestError("Corpo da requisição não pode estar vazio");
 
       const updateModelUseCase = container.resolve(UpdateModelUseCase);
       const updatedModel = await updateModelUseCase.execute(

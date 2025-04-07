@@ -10,6 +10,7 @@ export class RefreshTokenController {
     try {
       const refreshTokenUseCase = container.resolve(RefreshTokenUseCase);
       const authData = await refreshTokenUseCase.execute(data);
+      console.log(authData)
       return response.status(200).json(authData);
     } catch (error) {
       next(error)

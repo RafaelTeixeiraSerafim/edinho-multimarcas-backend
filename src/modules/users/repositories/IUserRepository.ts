@@ -2,7 +2,7 @@ import { CreateUserDTO } from "@modules/users/dtos/CreateUserDTO";
 import { IUser } from "@modules/users/interfaces/IUser";
 import { UpdateUserDTO } from "../dtos/UpdateUserDTO";
 import { UserResponseDTO } from "../dtos/UserResponseDTO";
-import { ResetPasswordDTO } from "../dtos/RecoverPasswordDTO";
+import { ResetPasswordDTO } from "../dtos/ResetPasswordDTO";
 
 export interface IUserRepository {
   create(data: CreateUserDTO, createdById?: string): Promise<UserResponseDTO>;

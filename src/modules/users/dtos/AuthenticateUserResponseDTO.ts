@@ -1,8 +1,16 @@
 import { UserResponseDTO } from "./UserResponseDTO";
+import { IsString, IsNumber, ValidateNested } from "class-validator";
 
-export interface AuthenticateUserResponseDTO {
+export class AuthenticateUserResponseDTO {
+  @IsString()
   accessToken: string;
+
+  @IsString()
   refreshToken: string;
-  tokenExpiry: number
+
+  @IsNumber()
+  tokenExpiry: number;
+
+  @ValidateNested({ each: true })
   user: UserResponseDTO;
 }

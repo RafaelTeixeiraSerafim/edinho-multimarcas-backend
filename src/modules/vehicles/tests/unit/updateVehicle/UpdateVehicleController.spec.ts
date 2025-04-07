@@ -4,7 +4,7 @@ import { container } from "tsyringe";
 import { UpdateVehicleController } from "@modules/vehicles/useCases/updateVehicle/UpdateVehicleController";
 import { UpdateVehicleUseCase } from "@modules/vehicles/useCases/updateVehicle/UpdateVehicleUseCase";
 import { UpdateVehicleDTO } from "@modules/vehicles/dtos/UpdateVehicleDTO";
-import { UnauthorizedError, ValidationError } from "@shared/infra/http/errors";
+import { UnauthorizedError, BadRequestError } from "@shared/infra/http/errors";
 
 // Mock the use case
 jest.mock("@modules/vehicles/useCases/updateVehicle/UpdateVehicleUseCase");
@@ -131,7 +131,7 @@ describe("UpdateVehicleController", () => {
       mockNext
     );
 
-    expect(mockNext).toHaveBeenCalledWith(expect.any(ValidationError));
+    expect(mockNext).toHaveBeenCalledWith(expect.any(BadRequestError));
     expect(mockUpdateVehicleUseCase.execute).not.toHaveBeenCalled();
   });
 

@@ -5,7 +5,10 @@ import { IPartialVehicle } from "../interfaces/IPartialVehicle";
 import { IVehicle } from "../interfaces/IVehicle";
 
 export interface IVehicleRepository {
-  create(data: CreateVehicleDTO, createdById: string): Promise<IVehicle>;
+  create(
+    data: CreateVehicleDTO,
+    createdById: string
+  ): Promise<VehicleResponseDTO>;
   delete(id: string, deletedById: string): Promise<void>;
   findByFuelTypeId(fuelTypeId: string): Promise<IVehicle[]>;
   findByModelId(modelId: string): Promise<VehicleResponseDTO[]>;

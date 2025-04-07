@@ -1,4 +1,4 @@
-import { UnauthorizedError, ValidationError } from "@shared/infra/http/errors";
+import { UnauthorizedError, BadRequestError } from "@shared/infra/http/errors";
 import { NextFunction, Request, Response } from "express";
 import { container } from "tsyringe";
 import { ResetPasswordUseCase } from "./ResetPasswordUseCase";

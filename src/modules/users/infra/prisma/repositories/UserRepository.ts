@@ -1,5 +1,5 @@
 import { CreateUserDTO } from "@modules/users/dtos/CreateUserDTO";
-import { ResetPasswordDTO } from "@modules/users/dtos/RecoverPasswordDTO";
+import { ResetPasswordDTO } from "@modules/users/dtos/ResetPasswordDTO";
 import { UpdateUserDTO } from "@modules/users/dtos/UpdateUserDTO";
 import { UserResponseDTO } from "@modules/users/dtos/UserResponseDTO";
 import { IUser } from "@modules/users/interfaces/IUser";
@@ -19,7 +19,14 @@ export class UserRepository implements IUserRepository {
         data: { createdById: user.id },
       });
 
-    const { password, refreshToken, ...userResponse } = user;
+    const {
+      password,
+      refreshToken,
+      deletedAt,
+      deletedById,
+      isDeleted,
+      ...userResponse
+    } = user;
     return userResponse;
   }
 
@@ -37,6 +44,9 @@ export class UserRepository implements IUserRepository {
       omit: {
         password: true,
         refreshToken: true,
+        isDeleted: true,
+        deletedAt: true,
+        deletedById: true,
       },
     });
   }
@@ -55,6 +65,9 @@ export class UserRepository implements IUserRepository {
       omit: {
         password: true,
         refreshToken: true,
+        isDeleted: true,
+        deletedAt: true,
+        deletedById: true,
       },
     });
   }
@@ -94,6 +107,9 @@ export class UserRepository implements IUserRepository {
       omit: {
         password: true,
         refreshToken: true,
+        isDeleted: true,
+        deletedAt: true,
+        deletedById: true,
       },
       where: {
         isDeleted: false,

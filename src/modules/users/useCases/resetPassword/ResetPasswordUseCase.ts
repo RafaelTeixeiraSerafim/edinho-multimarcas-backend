@@ -1,4 +1,4 @@
-import { ResetPasswordDTO } from "@modules/users/dtos/RecoverPasswordDTO";
+import { ResetPasswordDTO } from "@modules/users/dtos/ResetPasswordDTO";
 import { IUserRepository } from "@modules/users/repositories/IUserRepository";
 import { NotFoundError } from "@shared/infra/http/errors";
 import { generateHashedPassword } from "@utils/generateHashedPassword";

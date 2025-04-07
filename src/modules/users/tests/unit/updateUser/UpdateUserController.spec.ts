@@ -3,7 +3,7 @@ import { Request, Response, NextFunction } from "express";
 import { container } from "tsyringe";
 import { UpdateUserController } from "@modules/users/useCases/updateUser/UpdateUserController";
 import { UpdateUserUseCase } from "@modules/users/useCases/updateUser/UpdateUserUseCase";
-import { UnauthorizedError, ValidationError } from "@shared/infra/http/errors";
+import { UnauthorizedError, BadRequestError } from "@shared/infra/http/errors";
 import { UserResponseDTO } from "@modules/users/dtos/UserResponseDTO";
 import { IUser } from "@modules/users/interfaces/IUser";
 
@@ -125,7 +125,7 @@ describe("UpdateUserController", () => {
       mockNext
     );
 
-    expect(mockNext).toHaveBeenCalledWith(expect.any(ValidationError));
+    expect(mockNext).toHaveBeenCalledWith(expect.any(BadRequestError));
     expect(mockUpdateUserUseCase.execute).not.toHaveBeenCalled();
   });
 

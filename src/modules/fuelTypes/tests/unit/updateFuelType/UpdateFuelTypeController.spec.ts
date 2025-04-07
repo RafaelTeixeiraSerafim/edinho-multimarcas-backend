@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import { Request, Response, NextFunction } from "express";
 import { container } from "tsyringe";
-import { UnauthorizedError, ValidationError } from "@shared/infra/http/errors";
+import { UnauthorizedError, BadRequestError } from "@shared/infra/http/errors";
 import { UpdateFuelTypeController } from "@modules/fuelTypes/useCases/updateFuelType/UpdateFuelTypeController";
 import { UpdateFuelTypeUseCase } from "@modules/fuelTypes/useCases/updateFuelType/UpdateFuelTypeUseCase";
 
@@ -89,7 +89,7 @@ describe("UpdateFuelTypeController", () => {
       mockNext
     );
 
-    expect(mockNext).toHaveBeenCalledWith(expect.any(ValidationError));
+    expect(mockNext).toHaveBeenCalledWith(expect.any(BadRequestError));
   });
 
   it("deve chamar next com erro quando use case lançar exceção", async () => {

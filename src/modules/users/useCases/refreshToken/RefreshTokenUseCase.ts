@@ -22,10 +22,9 @@ export class RefreshTokenUseCase {
     if (!refreshTokenSecret || !tokenSecret)
       throw new Error("Variáveis de ambiente de autenticação ausentes");
 
-    const { userId } = verify(
-      refreshToken,
-      refreshTokenSecret
-    ) as IAuthTokenPayload;
+    const { userId } = verify(refreshToken, refreshTokenSecret, {
+      ignoreExpiration: false,
+    }) as IAuthTokenPayload;
 
     const user = await this.userRepository.findById(userId);
     if (!user) throw new NotFoundError("Usuário não encontrado", "userId");
@@ -39,7 +38,9 @@ export class RefreshTokenUseCase {
       userId: user.id,
     };
 
-    const newToken = sign(payload, tokenSecret, { expiresIn: `${auth.accessTokenExpiresInMinutes}m` });
+    const newToken = sign(payload, tokenSecret, {
+      expiresIn: `${auth.accessTokenExpiresInMinutes}m`,
+    });
 
     const newRefreshToken = sign(payload, refreshTokenSecret, {
       expiresIn: `${auth.refreshTokenExpiresInHours}h`,

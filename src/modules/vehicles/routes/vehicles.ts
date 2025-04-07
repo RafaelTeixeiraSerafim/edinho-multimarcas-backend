@@ -26,6 +26,63 @@ const getVehiclesByModelIdController = new GetVehiclesByModelIdController();
 
 const vehicleRoutes = Router();
 
+/**
+ * @swagger
+ * tags:
+ *   name: Vehicles
+ *   description: Vehicle management
+ */
+
+/**
+ * @swagger
+ * /api/v1/vehicles:
+ *   post:
+ *     tags: [Vehicles]
+ *     summary: Criar um novo veículo
+ *     description: Criar um novo veículo no sistema.
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/CreateVehicleDTO'
+ *     responses:
+ *       201:
+ *         description: Veículo criado com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/VehicleResponseDTO'
+ *       400:
+ *         description: Dados inválidos ou faltando
+ *         content: 
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             examples:
+ *               BadRequestError:
+ *                 $ref: '#/components/examples/BadRequest'
+ *       401:
+ *         description: Usuário não autenticado
+ *         content: 
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             examples:
+ *               UnauthorizedError:
+ *                 $ref: '#/components/examples/Unauthorized'
+ *       500:
+ *         description: Erro interno do servidor
+ *         content: 
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             examples:
+ *               InternalServerError:
+ *                 $ref: '#/components/examples/InternalServer'
+ */
 vehicleRoutes.post(
   "/vehicles",
   ensureAuthenticated,

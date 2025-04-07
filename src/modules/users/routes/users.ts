@@ -16,7 +16,7 @@ import { ensureAuthenticated } from "@shared/infra/http/middlewares/ensureAuthen
 import { RefreshTokenDTO } from "../dtos/RefreshTokenDTO";
 import { RefreshTokenController } from "../useCases/refreshToken/RefreshTokenController";
 import { optionalAuthenticate } from "@shared/infra/http/middlewares/optionalAuthenticate";
-import { ResetPasswordDTO } from "../dtos/RecoverPasswordDTO";
+import { ResetPasswordDTO } from "../dtos/ResetPasswordDTO";
 import { ResetPasswordController } from "../useCases/resetPassword/ResetPasswordController";
 
 const usersRoutes = Router();
@@ -34,6 +34,13 @@ const authenticateUserController = new AuthenticateUserController();
 const refreshTokenController = new RefreshTokenController();
 
 const resetPasswordController = new ResetPasswordController();
+
+/**
+ * @swagger
+ * tags:
+ *   name: Users
+ *   description: User management
+ */
 
 usersRoutes.post(
   "/users",
@@ -64,6 +71,56 @@ usersRoutes.get(
   listUsersController.handle
 );
 
+/**
+ * @swagger
+ * /api/v1/users/auth:
+ *   post:
+ *     tags: [Users]
+ *     summary: Cria uma nova sessão de usuário
+ *     description: Cria uma nova sessão de usuário com base nas credenciais fornecidas.
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/AuthenticateUserDTO'
+ *     responses:
+ *       201:
+ *         description: Sessão criada com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/AuthenticateUserResponseDTO'
+ *       400:
+ *         description: Dados inválidos ou não fornecidos
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             examples:
+ *               BadRequestError:
+ *                 $ref: '#/components/examples/BadRequest'
+ *       401:
+ *         description: Usuário não autenticado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             examples:
+ *               UnauthorizedError:
+ *                 $ref: '#/components/examples/Unauthorized'
+ *       500:
+ *         description: Erro interno do servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             examples:
+ *               InternalServerError:
+ *                 $ref: '#/components/examples/InternalServer'
+ */
 usersRoutes.post(
   "/users/auth",
   validateDTO(AuthenticateUserDTO),

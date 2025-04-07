@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 
 import {
-  ValidationError,
+  BadRequestError,
   NotFoundError,
   UnauthorizedError,
   CustomError,
@@ -13,7 +13,6 @@ export function errorManager(
   res: Response,
   next: NextFunction
 ) {
-  console.error(`[${err.name}]: ${err.message}`)
   if (err instanceof CustomError) {
     return res.status(err.statusCode).json({
       success: false,

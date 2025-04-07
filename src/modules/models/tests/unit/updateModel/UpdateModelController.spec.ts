@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import { Request, Response, NextFunction } from "express";
 import { container } from "tsyringe";
-import { UnauthorizedError, ValidationError } from "@shared/infra/http/errors";
+import { UnauthorizedError, BadRequestError } from "@shared/infra/http/errors";
 import { UpdateModelController } from "@modules/models/useCases/updateModel/UpdateModelController";
 import { UpdateModelUseCase } from "@modules/models/useCases/updateModel/UpdateModelUseCase";
 
@@ -46,7 +46,7 @@ describe("UpdateModelController", () => {
     createdById: "creator-id",
     updatedById: null,
     deletedById: null,
-    ...overrides
+    ...overrides,
   });
 
   beforeEach(() => {
@@ -59,7 +59,9 @@ describe("UpdateModelController", () => {
     } as any;
 
     // Mock the constructor
-    (UpdateModelUseCase as jest.Mock).mockImplementation(() => mockUpdateModelUseCase);
+    (UpdateModelUseCase as jest.Mock).mockImplementation(
+      () => mockUpdateModelUseCase
+    );
 
     updateModelController = new UpdateModelController();
 
@@ -78,9 +80,9 @@ describe("UpdateModelController", () => {
   });
 
   it("deve atualizar um modelo com sucesso e retornar status 200", async () => {
-    const mockData = { 
+    const mockData = {
       name: "Updated Model",
-      brandId: "new-brand-id" 
+      brandId: "new-brand-id",
     };
     mockRequest.body = mockData;
 
@@ -124,7 +126,7 @@ describe("UpdateModelController", () => {
       mockNext
     );
 
-    expect(mockNext).toHaveBeenCalledWith(expect.any(ValidationError));
+    expect(mockNext).toHaveBeenCalledWith(expect.any(BadRequestError));
     expect(mockUpdateModelUseCase.execute).not.toHaveBeenCalled();
   });
 
@@ -148,7 +150,7 @@ describe("UpdateModelController", () => {
 
     const mockUpdatedModel = createMockModel({
       ...mockData,
-      brandId: "original-brand-id" // Mantém o brandId original
+      brandId: "original-brand-id", // Mantém o brandId original
     });
     mockUpdateModelUseCase.execute.mockResolvedValue(mockUpdatedModel);
 
@@ -158,10 +160,12 @@ describe("UpdateModelController", () => {
       mockNext
     );
 
-    expect(mockResponse.json).toHaveBeenCalledWith(expect.objectContaining({
-      name: "Updated Model Name",
-      brandId: "original-brand-id"
-    }));
+    expect(mockResponse.json).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: "Updated Model Name",
+        brandId: "original-brand-id",
+      })
+    );
   });
 
   it("deve atualizar parcialmente apenas o brandId quando fornecido", async () => {
@@ -170,7 +174,7 @@ describe("UpdateModelController", () => {
 
     const mockUpdatedModel = createMockModel({
       ...mockData,
-      name: "Original Model" // Mantém o nome original
+      name: "Original Model", // Mantém o nome original
     });
     mockUpdateModelUseCase.execute.mockResolvedValue(mockUpdatedModel);
 
@@ -180,9 +184,11 @@ describe("UpdateModelController", () => {
       mockNext
     );
 
-    expect(mockResponse.json).toHaveBeenCalledWith(expect.objectContaining({
-      name: "Original Model",
-      brandId: "new-brand-id"
-    }));
+    expect(mockResponse.json).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: "Original Model",
+        brandId: "new-brand-id",
+      })
+    );
   });
 });

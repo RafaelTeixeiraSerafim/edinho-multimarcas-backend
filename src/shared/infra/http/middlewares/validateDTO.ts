@@ -1,7 +1,7 @@
 import { plainToInstance } from "class-transformer";
 import { validate } from "class-validator";
 import { NextFunction, Request, Response } from "express";
-import { ValidationError } from "../errors";
+import { BadRequestError } from "../errors";
 
 export const validateDTO =
   (dtoClass: any) =>
@@ -11,7 +11,7 @@ export const validateDTO =
       const errors = await validate(dto);
 
       if (errors.length > 0)
-        throw new ValidationError(
+        throw new BadRequestError(
           errors[0].constraints
             ? Object.values(errors[0].constraints)[0]
             : "Requisição inválida"

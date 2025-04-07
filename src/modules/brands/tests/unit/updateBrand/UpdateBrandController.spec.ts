@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import { Request, Response, NextFunction } from "express";
 import { container } from "tsyringe";
-import { UnauthorizedError, ValidationError } from "@shared/infra/http/errors";
+import { UnauthorizedError, BadRequestError } from "@shared/infra/http/errors";
 import { UpdateBrandController } from "@modules/brands/useCases/updateBrand/UpdateBrandController";
 import { UpdateBrandUseCase } from "@modules/brands/useCases/updateBrand/UpdateBrandUseCase";
 
@@ -44,7 +44,9 @@ describe("UpdateBrandController", () => {
     } as any;
 
     // Mock the constructor
-    (UpdateBrandUseCase as jest.Mock).mockImplementation(() => mockUpdateBrandUseCase);
+    (UpdateBrandUseCase as jest.Mock).mockImplementation(
+      () => mockUpdateBrandUseCase
+    );
 
     updateBrandController = new UpdateBrandController();
 
@@ -77,10 +79,10 @@ describe("UpdateBrandController", () => {
   });
 
   it("deve atualizar uma marca com sucesso e retornar status 200", async () => {
-    const mockBrandData = createMockBrand()
+    const mockBrandData = createMockBrand();
     const mockUpdatedBrand = {
       ...mockBrandData,
-      updatedById: "user-id"
+      updatedById: "user-id",
     };
 
     mockRequest.body = mockBrandData;
@@ -123,7 +125,7 @@ describe("UpdateBrandController", () => {
       mockNext
     );
 
-    expect(mockNext).toHaveBeenCalledWith(expect.any(ValidationError));
+    expect(mockNext).toHaveBeenCalledWith(expect.any(BadRequestError));
     expect(mockUpdateBrandUseCase.execute).not.toHaveBeenCalled();
   });
 
@@ -146,7 +148,7 @@ describe("UpdateBrandController", () => {
     const mockBrandData = createMockBrand();
     const mockUpdatedBrand = {
       ...mockBrandData,
-      updatedById: specificUserId
+      updatedById: specificUserId,
     };
 
     mockRequest.body = mockBrandData;
