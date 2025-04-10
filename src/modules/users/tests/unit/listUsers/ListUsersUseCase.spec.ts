@@ -47,7 +47,7 @@ describe("ListUsersUseCase", () => {
     const mockUsers = createMockUsers(5);
     mockUserRepository.list.mockResolvedValue(mockUsers);
 
-    const page = 1;
+    const page = 0;
     const pageSize = 10;
     const result = await listUsersUseCase.execute(page, pageSize);
 

@@ -7,7 +7,10 @@ import { IVehicleRepository } from "@modules/vehicles/repositories/IVehicleRepos
 import { prisma } from "@shared/infra/prisma";
 
 export class VehicleRepository implements IVehicleRepository {
-  async create(data: CreateVehicleDTO, createdById: string): Promise<VehicleResponseDTO> {
+  async create(
+    data: CreateVehicleDTO,
+    createdById: string
+  ): Promise<VehicleResponseDTO> {
     return await prisma.vehicles.create({
       data: { ...data, createdById },
       select: {
@@ -30,7 +33,7 @@ export class VehicleRepository implements IVehicleRepository {
         modelId: true,
         createdById: true,
         updatedById: true,
-      }
+      },
     });
   }
 
@@ -55,7 +58,7 @@ export class VehicleRepository implements IVehicleRepository {
   async list(page: number, pageSize: number): Promise<VehicleResponseDTO[]> {
     return await prisma.vehicles.findMany({
       where: { isDeleted: false },
-      skip: pageSize * (page - 1),
+      skip: pageSize * page,
       take: pageSize,
       orderBy: { createdAt: "asc" },
       select: {

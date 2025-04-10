@@ -5,12 +5,15 @@ import { ListBrandsUseCase } from "./ListBrandsUseCase";
 
 export class ListBrandsController {
   async handle(request: Request, response: Response, next: NextFunction) {
-    const { page = 1, pageSize = 10 } = request.query as PaginationQueryDTO;
+    let params = request.query as PaginationQueryDTO;
+
+    if (!["fipeCode", "name", "createdAt"].includes(params.orderByField || ""))
+      params.orderByField = "createdAt";
 
     try {
       const listBrandsUseCase = container.resolve(ListBrandsUseCase);
-      const brands = await listBrandsUseCase.execute(page, pageSize);
-      return response.status(200).json({ brands });
+      const brands = await listBrandsUseCase.execute(params);
+      return response.status(200).json(brands);
     } catch (error) {
       next(error);
     }

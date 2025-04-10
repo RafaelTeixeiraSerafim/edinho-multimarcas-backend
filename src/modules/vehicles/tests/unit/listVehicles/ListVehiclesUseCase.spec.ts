@@ -11,7 +11,7 @@ describe("ListVehiclesUseCase", () => {
     return Array.from({ length: count }, (_, i) => ({
       id: `vehicle-${i + 1}`,
       fipeCode: `code-${i + 1}`,
-      value: 50000 + (i * 10000),
+      value: 50000 + i * 10000,
       referenceMonth: 6,
       referenceYear: 2023,
       vehicleYear: 2023,
@@ -42,7 +42,7 @@ describe("ListVehiclesUseCase", () => {
     const mockVehicles = createMockVehicles(5);
     mockVehicleRepository.list.mockResolvedValue(mockVehicles);
 
-    const page = 1;
+    const page = 0;
     const pageSize = 10;
     const result = await listVehiclesUseCase.execute(page, pageSize);
 

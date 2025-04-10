@@ -1,5 +1,6 @@
 import { inject, injectable } from "tsyringe";
 import { IFuelTypeRepository } from "../../repositories/IFuelTypeRepository";
+import { PaginationQueryDTO } from "@shared/dtos/PaginationQueryDTO";
 
 @injectable()
 export class ListFuelTypesUseCase {
@@ -7,7 +8,9 @@ export class ListFuelTypesUseCase {
     @inject("FuelTypeRepository")
     private fuelTypeRepository: IFuelTypeRepository
   ) {}
-  async execute(page: number, pageSize: number) {
-    return await this.fuelTypeRepository.list(page, pageSize);
+  async execute(params: PaginationQueryDTO) {
+    return await this.fuelTypeRepository.list(
+      params
+    );
   }
 }

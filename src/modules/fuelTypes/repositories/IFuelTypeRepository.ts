@@ -2,6 +2,8 @@ import { IFuelType } from "../interfaces/IFuelType";
 import { CreateFuelTypeDTO } from "../dtos/CreateFuelTypeDTO";
 import { UpdateFuelTypeDTO } from "../dtos/UpdateFuelTypeDTO";
 import { FuelTypeResponseDTO } from "../dtos/FuelTypeResponseDTO";
+import { ListResponseDTO } from "@shared/dtos/ListResponseDTO";
+import { PaginationQueryDTO } from "@shared/dtos/PaginationQueryDTO";
 
 export interface IFuelTypeRepository {
   create(data: CreateFuelTypeDTO, createdById: string): Promise<IFuelType>;
@@ -11,7 +13,9 @@ export interface IFuelTypeRepository {
     updatedById: string
   ): Promise<IFuelType>;
   delete(id: string, deletedById: string): Promise<void>;
-  list(page: number, pageSize: number): Promise<FuelTypeResponseDTO[]>;
+  list(
+    params: PaginationQueryDTO
+  ): Promise<ListResponseDTO<FuelTypeResponseDTO>>;
   findById(id: string): Promise<IFuelType | null>;
   findByName(name: string): Promise<IFuelType | null>;
 }

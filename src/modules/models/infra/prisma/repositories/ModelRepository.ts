@@ -31,7 +31,7 @@ export class ModelRepository implements IModelRepository {
   async list(page: number, pageSize: number): Promise<ModelResponseDTO[]> {
     return await prisma.models.findMany({
       take: pageSize,
-      skip: pageSize * (page - 1),
+      skip: pageSize * page,
       orderBy: { createdAt: "asc" },
       where: {
         isDeleted: false,

@@ -5,7 +5,7 @@ import { PaginationQueryDTO } from "@shared/dtos/PaginationQueryDTO";
 
 export class ListVehiclesController {
   async handle(request: Request, response: Response, next: NextFunction) {
-    const { page = 1, pageSize = 10 } = request.query as PaginationQueryDTO;
+    const { page = 0, pageSize = 10 } = request.query as PaginationQueryDTO;
 
     try {
       const listVehiclesUseCase = container.resolve(ListVehiclesUseCase);

@@ -1,7 +1,9 @@
+import { ListResponseDTO } from "@shared/dtos/ListResponseDTO";
 import { BrandResponseDTO } from "../dtos/BrandResponseDTO";
 import { CreateBrandDTO } from "../dtos/CreateBrandDTO";
 import { UpdateBrandDTO } from "../dtos/UpdateBrandDTO";
 import { IBrand } from "../interfaces/IBrand";
+import { PaginationQueryDTO } from "@shared/dtos/PaginationQueryDTO";
 
 export interface IBrandRepository {
   create(data: CreateBrandDTO, createdById: string): Promise<IBrand>;
@@ -11,7 +13,7 @@ export interface IBrandRepository {
     updatedById: string
   ): Promise<IBrand>;
   delete(id: string, deletedById: string): Promise<void>;
-  list(page: number, pageSize: number): Promise<BrandResponseDTO[]>;
+  list(params: PaginationQueryDTO): Promise<ListResponseDTO<BrandResponseDTO>>;
   findById(id: string): Promise<IBrand | null>;
   findByName(name: string): Promise<IBrand | null>;
 }

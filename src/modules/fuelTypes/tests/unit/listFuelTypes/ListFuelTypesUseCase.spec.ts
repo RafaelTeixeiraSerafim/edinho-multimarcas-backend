@@ -24,7 +24,7 @@ describe("ListFuelTypesUseCase", () => {
 
   it("deve retornar uma lista de tipos de combustível com paginação", async () => {
     // Arrange
-    const page = 1;
+    const page = 0;
     const pageSize = 10;
 
     const mockFuelTypes = [
@@ -68,7 +68,7 @@ describe("ListFuelTypesUseCase", () => {
 
   it("deve retornar uma lista vazia se nenhum tipo de combustível for encontrado", async () => {
     // Arrange
-    const page = 1;
+    const page = 0;
     const pageSize = 10;
 
     mockFuelTypeRepository.list.mockResolvedValue([]);
@@ -83,7 +83,7 @@ describe("ListFuelTypesUseCase", () => {
 
   it("deve cuidar de erros mandados pelo repositório", async () => {
     // Arrange
-    const page = 1;
+    const page = 0;
     const pageSize = 10;
 
     const mockError = new Error("Database error");

@@ -24,16 +24,16 @@ const listModelsController = new ListModelsController();
 
 const getModelByBrandIdController = new GetModelsByBrandIdController();
 
-const modelRoutes = Router();
+const modelsRoutes = Router();
 
-modelRoutes.post(
+modelsRoutes.post(
   "/models",
   ensureAuthenticated,
   validateDTO(CreateModelDTO),
   createModelController.handle
 );
 
-modelRoutes.patch(
+modelsRoutes.patch(
   "/models/:id",
   ensureAuthenticated,
   validatePathParams(IdPathParamDTO),
@@ -41,23 +41,23 @@ modelRoutes.patch(
   updateModelController.handle
 );
 
-modelRoutes.delete(
+modelsRoutes.delete(
   "/models/:id",
   ensureAuthenticated,
   validatePathParams(IdPathParamDTO),
   deleteModelController.handle
 );
 
-modelRoutes.get(
+modelsRoutes.get(
   "/models",
   validateQueryParams(PaginationQueryDTO),
   listModelsController.handle
 );
 
-modelRoutes.get(
+modelsRoutes.get(
   "/brands/:brandId/models",
   validatePathParams(BrandIdPathParamDTO),
   getModelByBrandIdController.handle
 );
 
-export { modelRoutes };
+export { modelsRoutes };

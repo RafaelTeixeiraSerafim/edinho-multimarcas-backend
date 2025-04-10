@@ -3,6 +3,8 @@ import { FuelTypeResponseDTO } from "@modules/fuelTypes/dtos/FuelTypeResponseDTO
 import { UpdateFuelTypeDTO } from "@modules/fuelTypes/dtos/UpdateFuelTypeDTO";
 import { IFuelType } from "@modules/fuelTypes/interfaces/IFuelType";
 import { IFuelTypeRepository } from "@modules/fuelTypes/repositories/IFuelTypeRepository";
+import { ListResponseDTO } from "@shared/dtos/ListResponseDTO";
+import { PaginationQueryDTO } from "@shared/dtos/PaginationQueryDTO";
 import { prisma } from "@shared/infra/prisma";
 
 export class FuelTypeRepository implements IFuelTypeRepository {
@@ -28,20 +30,51 @@ export class FuelTypeRepository implements IFuelTypeRepository {
     });
   }
 
-  async list(page: number, pageSize: number): Promise<FuelTypeResponseDTO[]> {
-    return await prisma.fuelTypes.findMany({
-      take: pageSize,
-      skip: pageSize * (page - 1),
-      orderBy: { createdAt: "asc" },
-      where: {
-        isDeleted: false,
-      },
-      omit: {
-        deletedAt: true,
-        deletedById: true,
-        isDeleted: true,
-      },
-    });
+  async list(
+    params: PaginationQueryDTO
+  ): Promise<ListResponseDTO<FuelTypeResponseDTO>> {
+    const {
+      page = 0,
+      pageSize = 10,
+      search = "",
+      orderBy = "asc",
+      orderByField = "createdAt",
+    } = params;
+
+    const [items, total] = await Promise.all([
+      prisma.fuelTypes.findMany({
+        take: pageSize,
+        skip: pageSize * page,
+        orderBy: { [orderByField]: orderBy },
+        where: {
+          isDeleted: false,
+          ...(search && {
+            OR: [
+              { name: { contains: search, mode: "insensitive" } },
+              { abbreviation: { contains: search, mode: "insensitive" } },
+            ],
+          }),
+        },
+        omit: {
+          deletedAt: true,
+          deletedById: true,
+          isDeleted: true,
+        },
+      }),
+      prisma.fuelTypes.count({
+        where: {
+          isDeleted: false,
+        },
+      }),
+    ]);
+
+    const totalPages = Math.ceil(total / pageSize);
+
+    return {
+      items,
+      total,
+      totalPages,
+    };
   }
 
   async findByName(name: string): Promise<IFuelType | null> {

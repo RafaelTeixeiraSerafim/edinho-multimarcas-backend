@@ -43,7 +43,7 @@ describe("ListBrandsUseCase", () => {
     const mockBrands = createMockBrands(5);
     mockBrandRepository.list.mockResolvedValue(mockBrands);
 
-    const page = 1;
+    const page = 0;
     const pageSize = 10;
     const result = await listBrandsUseCase.execute(page, pageSize);
 

@@ -20,16 +20,16 @@ const deleteFuelTypeController = new DeleteFuelTypeController();
 
 const listFuelTypesController = new ListFuelTypesController();
 
-const fuelTypeRoutes = Router();
+const fuelTypesRoutes = Router();
 
-fuelTypeRoutes.post(
+fuelTypesRoutes.post(
   "/fuel-types",
   ensureAuthenticated,
   validateDTO(CreateFuelTypeDTO),
   createFuelTypeController.handle
 );
 
-fuelTypeRoutes.patch(
+fuelTypesRoutes.patch(
   "/fuel-types/:id",
   ensureAuthenticated,
   validatePathParams(IdPathParamDTO),
@@ -37,17 +37,17 @@ fuelTypeRoutes.patch(
   updateFuelTypeController.handle
 );
 
-fuelTypeRoutes.delete(
+fuelTypesRoutes.delete(
   "/fuel-types/:id",
   ensureAuthenticated,
   validatePathParams(IdPathParamDTO),
   deleteFuelTypeController.handle
 );
 
-fuelTypeRoutes.get(
+fuelTypesRoutes.get(
   "/fuel-types",
   validateQueryParams(PaginationQueryDTO),
   listFuelTypesController.handle
 );
 
-export { fuelTypeRoutes };
+export { fuelTypesRoutes };

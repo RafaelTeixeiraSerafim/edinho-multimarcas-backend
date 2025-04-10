@@ -1,5 +1,6 @@
 import { inject, injectable } from "tsyringe";
 import { IBrandRepository } from "../../repositories/IBrandRepository";
+import { PaginationQueryDTO } from "@shared/dtos/PaginationQueryDTO";
 
 @injectable()
 export class ListBrandsUseCase {
@@ -7,7 +8,9 @@ export class ListBrandsUseCase {
     @inject("BrandRepository")
     private brandRepository: IBrandRepository
   ) {}
-  async execute(page: number, pageSize: number) {
-    return await this.brandRepository.list(page, pageSize);
+  async execute(
+    params: PaginationQueryDTO
+  ) {
+    return await this.brandRepository.list(params);
   }
 }

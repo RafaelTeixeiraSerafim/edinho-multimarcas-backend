@@ -24,7 +24,7 @@ const listVehiclesController = new ListVehiclesController();
 
 const getVehiclesByModelIdController = new GetVehiclesByModelIdController();
 
-const vehicleRoutes = Router();
+const vehiclesRoutes = Router();
 
 /**
  * @swagger
@@ -57,7 +57,7 @@ const vehicleRoutes = Router();
  *               $ref: '#/components/schemas/VehicleResponseDTO'
  *       400:
  *         description: Dados inválidos ou faltando
- *         content: 
+ *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
@@ -66,7 +66,7 @@ const vehicleRoutes = Router();
  *                 $ref: '#/components/examples/BadRequest'
  *       401:
  *         description: Usuário não autenticado
- *         content: 
+ *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
@@ -75,7 +75,7 @@ const vehicleRoutes = Router();
  *                 $ref: '#/components/examples/Unauthorized'
  *       500:
  *         description: Erro interno do servidor
- *         content: 
+ *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
@@ -83,14 +83,14 @@ const vehicleRoutes = Router();
  *               InternalServerError:
  *                 $ref: '#/components/examples/InternalServer'
  */
-vehicleRoutes.post(
+vehiclesRoutes.post(
   "/vehicles",
   ensureAuthenticated,
   validateDTO(CreateVehicleDTO),
   createVehicleController.handle
 );
 
-vehicleRoutes.patch(
+vehiclesRoutes.patch(
   "/vehicles/:id",
   ensureAuthenticated,
   validatePathParams(IdPathParamDTO),
@@ -98,23 +98,23 @@ vehicleRoutes.patch(
   updateVehicleController.handle
 );
 
-vehicleRoutes.delete(
+vehiclesRoutes.delete(
   "/vehicles/:id",
   ensureAuthenticated,
   validatePathParams(IdPathParamDTO),
   deleteVehicleController.handle
 );
 
-vehicleRoutes.get(
+vehiclesRoutes.get(
   "/vehicles",
   validateQueryParams(PaginationQueryDTO),
   listVehiclesController.handle
 );
 
-vehicleRoutes.get(
+vehiclesRoutes.get(
   "/models/:modelId/vehicles",
   validatePathParams(ModelIdPathParamDTO),
   getVehiclesByModelIdController.handle
 );
 
-export { vehicleRoutes };
+export { vehiclesRoutes };

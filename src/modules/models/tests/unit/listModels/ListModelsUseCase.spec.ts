@@ -1,4 +1,4 @@
-import "reflect-metadata"
+import "reflect-metadata";
 import { IModelRepository } from "@modules/models/repositories/IModelRepository";
 import { ListModelsUseCase } from "@modules/models/useCases/listModels/ListModelsUseCase";
 import "reflect-metadata";
@@ -43,7 +43,7 @@ describe("ListModelsUseCase", () => {
 
   it("deve listar modelos com paginação correta", async () => {
     const mockModels = createMockModels(5);
-    const page = 1;
+    const page = 0;
     const pageSize = 10;
 
     mockModelRepository.list.mockResolvedValue(mockModels);

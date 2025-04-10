@@ -3,6 +3,8 @@ import { CreateBrandDTO } from "@modules/brands/dtos/CreateBrandDTO";
 import { UpdateBrandDTO } from "@modules/brands/dtos/UpdateBrandDTO";
 import { IBrand } from "@modules/brands/interfaces/IBrand";
 import { IBrandRepository } from "@modules/brands/repositories/IBrandRepository";
+import { ListResponseDTO } from "@shared/dtos/ListResponseDTO";
+import { PaginationQueryDTO } from "@shared/dtos/PaginationQueryDTO";
 import { prisma } from "@shared/infra/prisma";
 
 export class BrandRepository implements IBrandRepository {
@@ -28,13 +30,29 @@ export class BrandRepository implements IBrandRepository {
     });
   }
 
-  async list(page: number, pageSize: number): Promise<BrandResponseDTO[]> {
-    return await prisma.brands.findMany({
+  async list(
+    params: PaginationQueryDTO
+  ): Promise<ListResponseDTO<BrandResponseDTO>> {
+    const {
+      page = 0,
+      pageSize = 10,
+      search = "",
+      orderBy = "asc",
+      orderByField = "createdAt",
+    } = params;
+
+    const items = await prisma.brands.findMany({
       take: pageSize,
-      skip: pageSize * (page - 1),
-      orderBy: { createdAt: "asc" },
+      skip: pageSize * page,
+      orderBy: { [orderByField]: orderBy },
       where: {
         isDeleted: false,
+        ...(search && {
+          OR: [
+            { name: { contains: search, mode: "insensitive" } },
+            { fipeCode: { contains: search, mode: "insensitive" } },
+          ],
+        }),
       },
       omit: {
         deletedAt: true,
@@ -42,6 +60,16 @@ export class BrandRepository implements IBrandRepository {
         isDeleted: true,
       },
     });
+
+    const total = items.length;
+
+    const totalPages = Math.ceil(total / pageSize);
+
+    return {
+      items,
+      total,
+      totalPages,
+    };
   }
 
   async findById(id: string): Promise<IBrand | null> {

@@ -102,7 +102,7 @@ export class UserRepository implements IUserRepository {
   async list(page: number, pageSize: number): Promise<UserResponseDTO[]> {
     return await prisma.users.findMany({
       take: pageSize,
-      skip: pageSize * (page - 1),
+      skip: pageSize * page,
       orderBy: { createdAt: "asc" },
       omit: {
         password: true,

@@ -1,14 +1,21 @@
 import { vehicleSchemas } from "@modules/vehicles/swagger/schemas";
 import { ErrorExamples, ErrorResponseSchema } from "./errors";
 import { userSchemas } from "@modules/users/swagger/schemas";
-// import { userSchemas } from "@modules/users/swagger/schemas";
-// import { updateVehicleSchema } from "@modules/models/dtos/CreateModelDTO";
+
+import { validationMetadatasToSchemas } from "class-validator-jsonschema";
+import { fuelTypeSchemas } from "@modules/fuelTypes/swagger/schemas";
+
+export const schemas = validationMetadatasToSchemas({
+  refPointerPrefix: "#/components/schemas/",
+});
+
 
 export const components = {
   schemas: {
-    ...vehicleSchemas,
     ...userSchemas,
-    // ...updateVehicleSchema,
+    ...fuelTypeSchemas,
+    ...vehicleSchemas,
+    ...schemas,
     ErrorResponse: ErrorResponseSchema,
   },
   securitySchemes: {
